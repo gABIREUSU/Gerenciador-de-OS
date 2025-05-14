@@ -1,12 +1,31 @@
 package telas;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JTextField;
+
+import conexao.Conexao;
+
+import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class CadastroEmpresa {
 
-	private JFrame frame;
+	private JFrame frmCadastroDeEmpresa;
+	private JTextField txNome;
+	private JTextField txCnpj;
+	private JTextField txEndereco;
+	private JTextField txTel;
 
 	/**
 	 * Launch the application.
@@ -16,7 +35,7 @@ public class CadastroEmpresa {
 			public void run() {
 				try {
 					CadastroEmpresa window = new CadastroEmpresa();
-					window.frame.setVisible(true);
+					window.frmCadastroDeEmpresa.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -35,9 +54,98 @@ public class CadastroEmpresa {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmCadastroDeEmpresa = new JFrame();
+		frmCadastroDeEmpresa.setTitle("Cadastro de Empresa");
+		frmCadastroDeEmpresa.setBounds(100, 100, 600, 400);
+		frmCadastroDeEmpresa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmCadastroDeEmpresa.getContentPane().setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Nome:");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel.setBounds(62, 78, 59, 27);
+		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Cadastro de Empresas");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		lblNewLabel_1.setBounds(182, 21, 223, 27);
+		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_1);
+		
+		txNome = new JTextField();
+		txNome.setBounds(125, 78, 388, 27);
+		frmCadastroDeEmpresa.getContentPane().add(txNome);
+		txNome.setColumns(10);
+		
+		txCnpj = new JTextField("XXX.XXX.XXX-XX");
+		txCnpj.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(txCnpj.getText().equals("XXX.XXX.XXX-XX")) {
+					txCnpj.setText("");
+				}
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(txCnpj.getText().equals("")) {
+					txCnpj.setText("XXX.XXX.XXX-XX");
+				}
+			}
+		});
+		txCnpj.setColumns(10);
+		txCnpj.setBounds(125, 127, 388, 27);
+		frmCadastroDeEmpresa.getContentPane().add(txCnpj);
+		
+		JLabel lblNewLabel_2 = new JLabel("CNPJ:");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel_2.setBounds(62, 127, 59, 27);
+		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_2);
+		
+		txEndereco = new JTextField();
+		txEndereco.setColumns(10);
+		txEndereco.setBounds(161, 178, 352, 27);
+		frmCadastroDeEmpresa.getContentPane().add(txEndereco);
+		
+		JLabel lblNewLabel_3 = new JLabel("Endereço:");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel_3.setBounds(62, 178, 89, 27);
+		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_3);
+		
+		txTel = new JTextField();
+		txTel.setColumns(10);
+		txTel.setBounds(157, 226, 356, 27);
+		frmCadastroDeEmpresa.getContentPane().add(txTel);
+		
+		JLabel lblNewLabel_3_1 = new JLabel("Telefone:");
+		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblNewLabel_3_1.setBounds(62, 226, 85, 27);
+		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_3_1);
+		
+		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setBackground(new Color(255, 255, 255));
+		btnSalvar.setBounds(239, 291, 112, 39);
+		frmCadastroDeEmpresa.getContentPane().add(btnSalvar);
+		
+		JButton btnLimpar = new JButton("Limpar");
+		btnLimpar.setBackground(new Color(255, 255, 255));
+		btnLimpar.setBounds(97, 291, 112, 39);
+		frmCadastroDeEmpresa.getContentPane().add(btnLimpar);
+		btnLimpar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpar(frmCadastroDeEmpresa);
+			}
+		});
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setBackground(new Color(255, 255, 255));
+		btnExcluir.setBounds(377, 291, 112, 39);
+		frmCadastroDeEmpresa.getContentPane().add(btnExcluir);
 	}
-
+	
+	void limpar(Container container) {
+		for (Component component : container.getComponents()) {
+            if (component instanceof JTextField) {
+                ((JTextField) component).setText("");
+            } else if (component instanceof Container) {
+                limpar((Container) component);
+            }
+        }
+	}
 }
