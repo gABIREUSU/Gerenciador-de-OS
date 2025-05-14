@@ -1,0 +1,67 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class TelaTeste {
+
+	private JFrame frmPrincipal;
+	private JTextField txtNome;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					TelaTeste window = new TelaTeste();
+					window.frmPrincipal.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public TelaTeste() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frmPrincipal = new JFrame();
+		frmPrincipal.setTitle("Principal");
+		frmPrincipal.setBounds(100, 100, 450, 300);
+		frmPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmPrincipal.getContentPane().setLayout(null);
+		
+		JLabel lblNome = new JLabel("Nome:");
+		lblNome.setBounds(26, 41, 46, 14);
+		frmPrincipal.getContentPane().add(lblNome);
+		
+		txtNome = new JTextField();
+		txtNome.setBounds(67, 41, 86, 20);
+		frmPrincipal.getContentPane().add(txtNome);
+		txtNome.setColumns(10);
+		
+		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(btnSalvar, txtNome.getText());
+			}
+		});
+		btnSalvar.setBounds(169, 216, 89, 23);
+		frmPrincipal.getContentPane().add(btnSalvar);
+	}
+}

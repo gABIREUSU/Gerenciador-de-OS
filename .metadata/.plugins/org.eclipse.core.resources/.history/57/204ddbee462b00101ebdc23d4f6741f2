@@ -1,0 +1,5 @@
+package conexao;
+
+public class Conexao {
+	private static String Url = "jdbc:sqlserver://10.109.8.9:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;loginTimeout=30;";
+}

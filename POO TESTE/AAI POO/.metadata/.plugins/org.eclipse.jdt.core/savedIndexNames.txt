@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+H:\POO TESTE\AAI POO\.metadata\.plugins\org.eclipse.jdt.core
+1865797976.index
+673893340.index
+3024039450.index
