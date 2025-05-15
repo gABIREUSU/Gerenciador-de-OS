@@ -1,0 +1,19 @@
+package telas;
+
+import javax.swing.JTextField;
+
+public class DJTextField extends JTextField {
+	private String vlrPadrao;
+
+	public String getVlrPadrao() {
+		return vlrPadrao;
+	}
+
+	public void setVlrPadrao(String vlrPadrao) {
+		this.vlrPadrao = vlrPadrao;
+	}
+	
+	public void setTxPadrao() {
+		this.setText(vlrPadrao);
+	}
+}

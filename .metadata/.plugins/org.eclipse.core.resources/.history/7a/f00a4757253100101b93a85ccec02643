@@ -1,0 +1,42 @@
+package telas;
+
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+import javax.swing.JTextField;
+import javax.swing.text.Document;
+
+public class DJTextField extends JTextField {
+	private String vlrPadrao;
+
+	public String getVlrPadrao() {
+		return vlrPadrao;
+	}
+
+	public void setVlrPadrao(String vlrPadrao) {
+		this.vlrPadrao = vlrPadrao;
+	}
+
+	public DJTextField(String text) {
+		super(text);
+		vlrPadrao = text;
+		// TODO Auto-generated constructor stub
+	}
+
+	public void setTxPadrao() {
+		this.setText(vlrPadrao);
+	}
+
+	public void DfocusGained(FocusEvent e) {
+		if(this.getText().equals(vlrPadrao)) {
+			this.setText("");
+		}
+	}
+
+	public void DfocusLost(FocusEvent e) {
+		if(this.getText().equals("")) {
+			this.setText(vlrPadrao);
+		}
+	}
+
+}
