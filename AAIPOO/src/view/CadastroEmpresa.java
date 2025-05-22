@@ -1,175 +1,207 @@
-package view;
+package View;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
+
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.SQLException;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import model.DJTextField;
 
-public class CadastroEmpresa {
 
-	private JFrame frmCadastroDeEmpresa;
-	private DJTextField txNome;
-	private DJTextField txCnpj;
-	private DJTextField txEndereco;
-	private DJTextField txTel;
+import Controller.EmpresaController;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CadastroEmpresa window = new CadastroEmpresa();
-					window.frmCadastroDeEmpresa.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+public class CadastroEmpresa extends JPanel {
+
+    private static final long serialVersionUID = 1L;
+    private JFrame frmCadastroDeEmpresa;
+    private DJTextField txtNome;
+    private DJTextField txtCnpj;
+    private DJTextField txtEndereco;
+    private DJTextField txtTel;
+
+    private EmpresaController controller = new EmpresaController();
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                CadastroEmpresa window = new CadastroEmpresa();
+                window.frmCadastroDeEmpresa.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public CadastroEmpresa() {
+        initialize();
+    }
+
+    private void initialize() {
+        frmCadastroDeEmpresa = new JFrame();
+        frmCadastroDeEmpresa.setTitle("Cadastro de Empresa");
+        frmCadastroDeEmpresa.setBounds(100, 100, 600, 410);
+        frmCadastroDeEmpresa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        GradientePanel contentPanel = new GradientePanel();
+        frmCadastroDeEmpresa.setContentPane(contentPanel);
+        contentPanel.setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setBounds(235, 0, 368, 371);
+        contentPanel.add(panel);
+        panel.setLayout(null);
+
+        txtNome = new DJTextField("  Nome da empresa");
+        txtNome.setBounds(38, 102, 269, 20);
+        panel.add(txtNome);
+        addFocus(txtNome);
+
+        txtCnpj = new DJTextField("  12.345.678/0009-10");
+        txtCnpj.setBounds(38, 211, 269, 20);
+        panel.add(txtCnpj);
+        addFocus(txtCnpj);
+
+        txtTel = new DJTextField("  (31)98765-4321");
+        txtTel.setBounds(38, 264, 269, 20);
+        panel.add(txtTel);
+        addFocus(txtTel);
+
+        txtEndereco = new DJTextField("  Rua, bairro, número");
+        txtEndereco.setBounds(38, 157, 269, 20);
+        panel.add(txtEndereco);
+        addFocus(txtEndereco);
+
+        JLabel lblNome = new JLabel("Nome");
+        lblNome.setForeground(Color.GRAY);
+        lblNome.setFont(new Font("Tahoma", Font.BOLD, 11));
+        lblNome.setBounds(38, 78, 53, 27);
+        panel.add(lblNome);
+
+        RoundButton btnSalvar = new RoundButton("Cadastrar");
+        btnSalvar.setBounds(136, 318, 86, 20);
+        panel.add(btnSalvar);
+        btnSalvar.addActionListener(e -> {
+			try {
+				salvar();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
 			}
 		});
-	}
 
-	/**
-	 * Create the application.
-	 */
-	public CadastroEmpresa() {
-		initialize();
-	}
+        JLabel lblTitulo = new JLabel("Vamos começar");
+        lblTitulo.setForeground(Color.BLACK);
+        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 17));
+        lblTitulo.setBounds(38, 40, 147, 27);
+        panel.add(lblTitulo);
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frmCadastroDeEmpresa = new JFrame();
-		frmCadastroDeEmpresa.setTitle("Cadastro de Empresa");
-		frmCadastroDeEmpresa.setBounds(100, 100, 600, 400);
-		frmCadastroDeEmpresa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmCadastroDeEmpresa.getContentPane().setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Nome:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel.setBounds(62, 78, 59, 27);
-		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Cadastro de Empresas");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		lblNewLabel_1.setBounds(182, 21, 223, 27);
-		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_1);
-		
-		txNome = new DJTextField("Empresa XXX...");
-		txNome.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txNome.DfocusGained();
-			}
-			@Override
-			public void focusLost(FocusEvent e) {
-				txNome.DfocusLost();
-			}
-		});
-		txNome.setBounds(125, 78, 388, 27);
-		frmCadastroDeEmpresa.getContentPane().add(txNome);
-		txNome.setColumns(10);
-		
-		txCnpj = new DJTextField("XX.XXX.XXX/XXXX-XX");
-		txCnpj.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txCnpj.DfocusGained();
-			}
-			@Override
-			public void focusLost(FocusEvent e) {
-				txCnpj.DfocusLost();
-			}
-		});
-		txCnpj.setColumns(10);
-		txCnpj.setBounds(125, 127, 388, 27);
-		frmCadastroDeEmpresa.getContentPane().add(txCnpj);
-		
-		JLabel lblNewLabel_2 = new JLabel("CNPJ:");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_2.setBounds(62, 127, 59, 27);
-		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_2);
-		
-		txEndereco = new DJTextField("Av. Fulano de tal");
-		txEndereco.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txEndereco.DfocusGained();
-			}
-			@Override
-			public void focusLost(FocusEvent e) {
-				txEndereco.DfocusLost();
-			}
-		});
-		txEndereco.setColumns(10);
-		txEndereco.setBounds(161, 178, 352, 27);
-		frmCadastroDeEmpresa.getContentPane().add(txEndereco);
-		
-		JLabel lblNewLabel_3 = new JLabel("Endereço:");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_3.setBounds(62, 178, 89, 27);
-		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_3);
-		
-		txTel = new DJTextField("(XX)XXXXX-XXXX");
-		txTel.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				txTel.DfocusGained();
-			}
-			@Override
-			public void focusLost(FocusEvent e) {
-				txTel.DfocusLost();
-			}
-		});
-		txTel.setColumns(10);
-		txTel.setBounds(157, 226, 356, 27);
-		frmCadastroDeEmpresa.getContentPane().add(txTel);
-		
-		JLabel lblNewLabel_3_1 = new JLabel("Telefone:");
-		lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel_3_1.setBounds(62, 226, 85, 27);
-		frmCadastroDeEmpresa.getContentPane().add(lblNewLabel_3_1);
-		
-		JButton btnSalvar = new JButton("Salvar");
-		btnSalvar.setBackground(new Color(255, 255, 255));
-		btnSalvar.setBounds(239, 291, 112, 39);
-		frmCadastroDeEmpresa.getContentPane().add(btnSalvar);
-		
-		JButton btnLimpar = new JButton("Limpar");
-		btnLimpar.setBackground(new Color(255, 255, 255));
-		btnLimpar.setBounds(97, 291, 112, 39);
-		frmCadastroDeEmpresa.getContentPane().add(btnLimpar);
-		btnLimpar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				limpar(frmCadastroDeEmpresa);
-			}
-		});
-		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setBackground(new Color(255, 255, 255));
-		btnExcluir.setBounds(377, 291, 112, 39);
-		frmCadastroDeEmpresa.getContentPane().add(btnExcluir);
-	}
-	
-	void limpar(Container container) {
-		for (Component component : container.getComponents()) {
+        RoundButton btnExcluir = new RoundButton("Excluir");
+        btnExcluir.setBounds(232, 318,86, 20);
+        panel.add(btnExcluir);
+
+        JLabel lblEndereco = new JLabel("Endereço");
+        lblEndereco.setForeground(Color.GRAY);
+        lblEndereco.setFont(new Font("Tahoma", Font.BOLD, 11));
+        lblEndereco.setBounds(38, 133, 53, 27);
+        panel.add(lblEndereco);
+
+        JLabel lblCnpj = new JLabel("CNPJ");
+        lblCnpj.setForeground(Color.GRAY);
+        lblCnpj.setFont(new Font("Tahoma", Font.BOLD, 11));
+        lblCnpj.setBounds(38, 188, 53, 27);
+        panel.add(lblCnpj);
+
+        JLabel lblTel = new JLabel("Telefone");
+        lblTel.setForeground(Color.GRAY);
+        lblTel.setFont(new Font("Tahoma", Font.BOLD, 11));
+        lblTel.setBounds(38, 242, 53, 27);
+        panel.add(lblTel);
+        
+                RoundButton btnLimpar = new RoundButton("Limpar");
+                btnLimpar.setBounds(38, 318, 86, 20);
+                panel.add(btnLimpar);
+                btnLimpar.addActionListener(e -> limpar(contentPanel));
+
+        JLabel lblBemVindo = new JLabel("Bem-Vindo, ");
+        lblBemVindo.setBounds(44, 116, 159, 27);
+        lblBemVindo.setForeground(Color.WHITE);
+        lblBemVindo.setFont(new Font("Sitka Small", Font.BOLD, 23));
+        contentPanel.add(lblBemVindo);
+
+        JLabel lblMensagem1 = new JLabel("Seu cadastro está a apenas");
+        lblMensagem1.setBounds(10, 143, 215, 27);
+        lblMensagem1.setForeground(Color.WHITE);
+        lblMensagem1.setFont(new Font("Sitka Small", Font.BOLD, 15));
+        contentPanel.add(lblMensagem1);
+
+        JLabel lblMensagem2 = new JLabel("um clique!");
+        lblMensagem2.setBounds(70, 164, 85, 27);
+        lblMensagem2.setForeground(Color.WHITE);
+        lblMensagem2.setFont(new Font("Sitka Small", Font.BOLD, 15));
+        contentPanel.add(lblMensagem2);
+
+        JLabel lblMensagem3 = new JLabel("insira seus dados ao lado e");
+        lblMensagem3.setBounds(30, 291, 173, 16);
+        lblMensagem3.setForeground(Color.WHITE);
+        lblMensagem3.setFont(new Font("Sitka Small", Font.PLAIN, 12));
+        contentPanel.add(lblMensagem3);
+
+        JLabel lblMensagem4 = new JLabel("desfrute do melhor da");
+        lblMensagem4.setBounds(44, 304, 144, 16);
+        lblMensagem4.setForeground(Color.WHITE);
+        lblMensagem4.setFont(new Font("Sitka Small", Font.PLAIN, 12));
+        contentPanel.add(lblMensagem4);
+
+        JLabel lblMensagem5 = new JLabel("empresa.");
+        lblMensagem5.setBounds(83, 318, 64, 16);
+        lblMensagem5.setForeground(Color.WHITE);
+        lblMensagem5.setFont(new Font("Sitka Small", Font.PLAIN, 12));
+        contentPanel.add(lblMensagem5);
+
+        MostrarImagem painelImagem = new MostrarImagem();
+        painelImagem.setBounds(44, 0, 144, 144);
+        painelImagem.setBackground(new Color(166, 180, 255));
+        contentPanel.add(painelImagem);
+    }
+
+    private void addFocus(DJTextField txt) {
+        txt.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txt.DfocusGained();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                txt.DfocusLost();
+            }
+        });
+    }
+
+    void limpar(Container container) {
+        for (Component component : container.getComponents()) {
             if (component instanceof DJTextField) {
-                ((DJTextField) component).setTxPadrao();;
+                ((DJTextField) component).setTxPadrao();
             } else if (component instanceof Container) {
                 limpar((Container) component);
             }
         }
-	}
+    }
 
+    private void salvar() throws SQLException {
+        controller.salvar(txtNome.getText(), txtCnpj.getText(), txtEndereco.getText(), txtTel.getText());
+    }
 }
+
+	
+	
+	
+

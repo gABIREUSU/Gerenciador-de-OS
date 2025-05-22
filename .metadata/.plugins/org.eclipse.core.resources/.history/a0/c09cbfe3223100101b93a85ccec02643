@@ -1,7 +1,0 @@
-package telas;
-
-import javax.swing.JTextField;
-
-public class DJTextField extends JTextField {
-
-}

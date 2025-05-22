@@ -1,10 +1,10 @@
-package model;
+package Model;
 
 public class Empresa {
 	private String nome;
 	private String cnpj;
 	private String endereco;
-	private String tel;
+	private String telefone;
 	
 	public String getNome() {
 		return nome;
@@ -24,22 +24,23 @@ public class Empresa {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
-	public String getTel() {
-		return tel;
+	public String getTelefone() {
+		return telefone;
 	}
-	public void setTel(String tel) {
-		this.tel = tel;
+	public void setTel(String telefone) {
+		this.telefone = telefone;
 	}
 	
-	public Empresa(String nome, String cnpj, String endereco, String tel) {
+	public Empresa(String nome, String cnpj, String endereco, String telefone) {
 		super();
-		this.setNome(nome);
-		this.setCnpj(cnpj);
-		this.setEndereco(endereco);
-		this.setTel(tel);
+		this.nome = nome;
+		this.cnpj = cnpj;
+		this.endereco = endereco;
+		this.telefone = telefone;
 	}
 	
 	
 	
 	
+
 }

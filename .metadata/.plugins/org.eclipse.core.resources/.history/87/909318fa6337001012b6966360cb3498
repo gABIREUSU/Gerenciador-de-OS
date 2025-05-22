@@ -1,0 +1,13 @@
+package Controller;
+
+import Model.Empresa;
+import Model.EmpresaDAO;
+
+public class EmpresaController {
+	EmpresaDAO dao = new EmpresaDAO();
+	
+	public void salvar (String nome, String cnpj, String endereco, String tel) {
+		Empresa empresa = new Empresa(nome, cnpj, endereco, tel);
+		dao.salvar(empresa);
+	}
+}

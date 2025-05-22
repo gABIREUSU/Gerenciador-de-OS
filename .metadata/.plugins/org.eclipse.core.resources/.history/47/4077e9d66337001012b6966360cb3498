@@ -1,0 +1,26 @@
+package Model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class EmpresaDAO {
+	public void salvar(Empresa empresa) {
+		String sql = "INSERT INTO Usuario (nome, cnpj, endereco, telefone) "
+				+ "VALUES (?, ?, ?, ?)";
+		Conexao.conectar();
+		try (
+				Connection conn = Conexao.Conexao;
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+			
+			stmt.setString(1, empresa.getNome());
+			stmt.setString(2, empresa.getCnpj());
+			stmt.setString(3, empresa.getEndereco());
+			stmt.setString(4, empresa.getTelefone());
+		
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+	}
+}
