@@ -1,0 +1,106 @@
+package View;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import Model.Conexao;
+
+import java.awt.*;
+import java.sql.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+public class TabelaEmpresas extends JFrame {
+
+    private JTable tabela;
+    private DefaultTableModel modelo;
+
+    public TabelaEmpresas() {
+        setTitle("Empresas Cadastradas");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        modelo = new DefaultTableModel() {
+        	@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Nenhuma célula será editável
+            }
+        };
+        getContentPane().setLayout(null);
+        tabela = new JTable(modelo);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+        	if (!e.getValueIsAdjusting()) {
+                int linha = tabela.getSelectedRow();
+                int coluna = tabela.getSelectedColumn();
+
+                if (linha != -1 && coluna != -1) {
+                    Object valor = tabela.getValueAt(linha, coluna);
+                    System.out.println("Célula selecionada: (" + linha + ", " + coluna + ") → " + valor);
+                }
+        	}
+        	
+        });
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setBounds(88, 34, 395, 282);
+
+        getContentPane().add(scroll);
+        
+        JButton btnAtualizar = new JButton("Atualizar");
+        btnAtualizar.setVisible(false);
+        btnAtualizar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
+        btnAtualizar.setBounds(88, 327, 89, 23);
+        getContentPane().add(btnAtualizar);
+        
+        JButton btnExcluir = new JButton("Excluir");
+        btnExcluir.setVisible(false);
+        btnExcluir.setBounds(394, 327, 89, 23);
+        getContentPane().add(btnExcluir);
+        
+        JLabel lblTitulo = new JLabel("Lista de Empresas Cadastradas");
+        lblTitulo.setBounds(209, 11, 150, 14);
+        getContentPane().add(lblTitulo);
+        carregarDados();
+
+        setVisible(true);
+    }
+
+    private void carregarDados() {
+        // Conecta com o banco
+        Conexao.conectar();
+
+        String sql = "SELECT Cod_Emp, Nome, CNPJ, Endereco, Telefone FROM Empresas";
+
+        try (
+            Connection conn = Conexao.Conexao;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+        ) {
+            // Cabeçalhos da tabela
+            modelo.setColumnIdentifiers(new Object[]{"Código", "Nome", "CNPJ", "Endereço", "Telefone"});
+
+            // Preenche os dados da tabela
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getInt("Cod_Emp"),
+                    rs.getString("Nome"),
+                    rs.getString("CNPJ"),
+                    rs.getString("Endereco"),
+                    rs.getString("Telefone")
+                });
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TabelaEmpresas());
+    }
+}

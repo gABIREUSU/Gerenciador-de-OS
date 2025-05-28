@@ -1,0 +1,71 @@
+package View;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import Model.Conexao;
+
+import java.awt.*;
+import java.sql.*;
+
+
+public class TabelaEmpresas extends JFrame {
+
+    private JTable tabela;
+    private DefaultTableModel modelo;
+
+    public TabelaEmpresas() {
+        setTitle("Empresas Cadastradas");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        modelo = new DefaultTableModel() {
+        	@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Nenhuma célula será editável
+            }
+        };
+        tabela = new JTable(modelo);
+        JScrollPane scroll = new JScrollPane(tabela);
+
+        getContentPane().add(scroll, BorderLayout.EAST);
+        carregarDados();
+
+        setVisible(true);
+    }
+
+    private void carregarDados() {
+        // Conecta com o banco
+        Conexao.conectar();
+
+        String sql = "SELECT Cod_Emp, Nome, CNPJ, Endereco, Telefone FROM Empresas";
+
+        try (
+            Connection conn = Conexao.Conexao;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+        ) {
+            // Cabeçalhos da tabela
+            modelo.setColumnIdentifiers(new Object[]{"Código", "Nome", "CNPJ", "Endereço", "Telefone"});
+
+            // Preenche os dados da tabela
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getInt("Cod_Emp"),
+                    rs.getString("Nome"),
+                    rs.getString("CNPJ"),
+                    rs.getString("Endereco"),
+                    rs.getString("Telefone")
+                });
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TabelaEmpresas());
+    }
+}
