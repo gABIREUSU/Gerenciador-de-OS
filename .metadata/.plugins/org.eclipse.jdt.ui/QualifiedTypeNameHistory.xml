@@ -3,4 +3,11 @@
     <fullyQualifiedTypeName name="javax.swing.ListSelectionModel"/>
     <fullyQualifiedTypeName name="javax.swing.JPanel"/>
     <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+    <fullyQualifiedTypeName name="View.AtualizarEmpresa"/>
+    <fullyQualifiedTypeName name="java.lang.Integer"/>
+    <fullyQualifiedTypeName name="Model.Conexao"/>
+    <fullyQualifiedTypeName name="Model.Empresa"/>
+    <fullyQualifiedTypeName name="Model.EmpresaDAO"/>
+    <fullyQualifiedTypeName name="Controller.EmpresaController"/>
+    <fullyQualifiedTypeName name="View.TabelaEmpresa"/>
 </qualifiedTypeNameHistroy>
