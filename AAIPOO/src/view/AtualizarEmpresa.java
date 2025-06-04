@@ -2,7 +2,6 @@ package View;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Color;
 
@@ -15,44 +14,38 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
-
 import Controller.EmpresaController;
+import Model.DJTextField;
+import Model.GradientePanel;
 import Model.MostrarImagem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class CadastroEmpresa extends JPanel {
-
-    private static final long serialVersionUID = 1L;
-    private JFrame frmCadastroDeEmpresa;
+public class AtualizarEmpresa extends JFrame {
+	private static final long serialVersionUID = 1L;
+    int linha;
+    
     private DJTextField txtNome;
     private DJTextField txtCnpj;
     private DJTextField txtEndereco;
     private DJTextField txtTel;
 
     private EmpresaController controller = new EmpresaController();
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                CadastroEmpresa window = new CadastroEmpresa();
-                window.frmCadastroDeEmpresa.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public CadastroEmpresa() {
-        initialize();
-    }
-
-    private void initialize() {
-        frmCadastroDeEmpresa = new JFrame();
-        frmCadastroDeEmpresa.setTitle("Cadastro de Empresa");
-        frmCadastroDeEmpresa.setBounds(100, 100, 600, 410);
-        frmCadastroDeEmpresa.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    public AtualizarEmpresa(int Cod_Emp,String Nome, String CNPJ, String Endereco,String Tel) {
+        setTitle("Empresas Cadastradas");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setVisible(true);
+        
+        new JFrame();
+        setTitle("Cadastro de Empresa");
+        setBounds(100, 100, 600, 410);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         GradientePanel contentPanel = new GradientePanel();
-        frmCadastroDeEmpresa.setContentPane(contentPanel);
+        setContentPane(contentPanel);
         contentPanel.setLayout(null);
 
         JPanel panel = new JPanel();
@@ -61,22 +54,22 @@ public class CadastroEmpresa extends JPanel {
         contentPanel.add(panel);
         panel.setLayout(null);
 
-        txtNome = new DJTextField("  Nome da empresa");
+        txtNome = new DJTextField(Nome);
         txtNome.setBounds(38, 102, 269, 20);
         panel.add(txtNome);
         addFocus(txtNome);
 
-        txtCnpj = new DJTextField("  12.345.678/0009-10");
+        txtCnpj = new DJTextField(CNPJ);
         txtCnpj.setBounds(38, 211, 269, 20);
         panel.add(txtCnpj);
         addFocus(txtCnpj);
 
-        txtTel = new DJTextField("  (31)98765-4321");
+        txtTel = new DJTextField(Tel);
         txtTel.setBounds(38, 264, 269, 20);
         panel.add(txtTel);
         addFocus(txtTel);
 
-        txtEndereco = new DJTextField("  Rua, bairro, número");
+        txtEndereco = new DJTextField(Endereco);
         txtEndereco.setBounds(38, 157, 269, 20);
         panel.add(txtEndereco);
         addFocus(txtEndereco);
@@ -87,8 +80,8 @@ public class CadastroEmpresa extends JPanel {
         lblNome.setBounds(38, 78, 53, 27);
         panel.add(lblNome);
 
-        RoundButton btnSalvar = new RoundButton("Cadastrar");
-        btnSalvar.setBounds(136, 318, 86, 20);
+        RoundButton btnSalvar = new RoundButton("Atualizar");
+        btnSalvar.setBounds(194, 309, 86, 20);
         panel.add(btnSalvar);
         btnSalvar.addActionListener(e -> {
 			try {
@@ -104,9 +97,15 @@ public class CadastroEmpresa extends JPanel {
         lblTitulo.setBounds(38, 40, 147, 27);
         panel.add(lblTitulo);
 
-        RoundButton btnExcluir = new RoundButton("Excluir");
-        btnExcluir.setBounds(232, 318,86, 20);
-        panel.add(btnExcluir);
+        RoundButton btnLsEmp = new RoundButton("Excluir");
+        btnLsEmp.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new TabelaEmpresa();
+        	}
+        });
+        btnLsEmp.setText("Lista de Empresas");
+        btnLsEmp.setBounds(61, 340,219, 20);
+        panel.add(btnLsEmp);
 
         JLabel lblEndereco = new JLabel("Endereço");
         lblEndereco.setForeground(Color.GRAY);
@@ -127,7 +126,7 @@ public class CadastroEmpresa extends JPanel {
         panel.add(lblTel);
         
                 RoundButton btnLimpar = new RoundButton("Limpar");
-                btnLimpar.setBounds(38, 318, 86, 20);
+                btnLimpar.setBounds(61, 309, 86, 20);
                 panel.add(btnLimpar);
                 btnLimpar.addActionListener(e -> limpar(contentPanel));
 
@@ -171,13 +170,14 @@ public class CadastroEmpresa extends JPanel {
         painelImagem.setBounds(44, 0, 144, 144);
         painelImagem.setBackground(new Color(166, 180, 255));
         contentPanel.add(painelImagem);
+        
     }
 
     private void addFocus(DJTextField txt) {
-        txt.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                txt.DfocusGained();
+    txt.addFocusListener(new FocusAdapter() {
+    	@Override
+        public void focusGained(FocusEvent e) {
+    		txt.DfocusGained();
             }
 
             @Override
@@ -201,8 +201,3 @@ public class CadastroEmpresa extends JPanel {
         controller.salvar(txtNome.getText(), txtCnpj.getText(), txtEndereco.getText(), txtTel.getText());
     }
 }
-
-	
-	
-	
-

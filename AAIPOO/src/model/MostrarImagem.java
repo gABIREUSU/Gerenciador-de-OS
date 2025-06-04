@@ -6,7 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class MostrarImagem extends JPanel {
-    private Image imagem;
+    private static final long serialVersionUID = 1L;
+	private Image imagem;
 
     public MostrarImagem() {
         setOpaque(false); 

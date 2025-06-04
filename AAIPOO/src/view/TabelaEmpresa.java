@@ -5,28 +5,31 @@ import javax.swing.table.DefaultTableModel;
 
 import Model.Conexao;
 
-import java.awt.*;
 import java.sql.*;
 import java.awt.event.ActionListener;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-
-public class TabelaEmpresas extends JFrame {
-
-    private JTable tabela;
+public class TabelaEmpresa extends JFrame {
+	private static final long serialVersionUID = 1L;
+	private JTable tabela;
     private DefaultTableModel modelo;
+    int linha;
 
-    public TabelaEmpresas() {
+    public TabelaEmpresa() {
         setTitle("Empresas Cadastradas");
         setSize(600, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         
         JButton btnAtualizar = new JButton("Atualizar");
         btnAtualizar.setBounds(88, 327, 89, 23);
         btnAtualizar.setVisible(false);
         btnAtualizar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		atualizarDados(tabela);
         	}
         });
         getContentPane().setLayout(null);
@@ -38,7 +41,9 @@ public class TabelaEmpresas extends JFrame {
         getContentPane().add(btnExcluir);
         
         modelo = new DefaultTableModel() {
-        	@Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Nenhuma célula será editável
             }
@@ -47,11 +52,9 @@ public class TabelaEmpresas extends JFrame {
         tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tabela.getSelectionModel().addListSelectionListener(e -> {
         	if (!e.getValueIsAdjusting()) {
-                int linha = tabela.getSelectedRow();
-                int coluna = tabela.getSelectedColumn();
+                linha = tabela.getSelectedRow();
 
-                if (linha != -1 && coluna != -1) {
-                    Object valor = tabela.getValueAt(linha, coluna);
+                if (linha != -1) {
                     btnAtualizar.setVisible(true);
                     btnExcluir.setVisible(true);
                 }
@@ -67,6 +70,19 @@ public class TabelaEmpresas extends JFrame {
         getContentPane().add(lblTitulo);
         carregarDados();
         setVisible(true);
+        
+        getContentPane().addMouseListener(new MouseAdapter() {
+    		@Override
+    		public void mouseClicked(MouseEvent e) {
+    			Component clicado = SwingUtilities.getDeepestComponentAt(getContentPane(), e.getX(), e.getY());
+                if (!(clicado instanceof JTable || SwingUtilities.isDescendingFrom(clicado, tabela))) {
+                    tabela.clearSelection();
+                    btnAtualizar.setVisible(false);
+                    btnExcluir.setVisible(false);
+                }
+            }
+    		
+    	});
     }
 
     private void carregarDados() {
@@ -81,12 +97,12 @@ public class TabelaEmpresas extends JFrame {
             ResultSet rs = stmt.executeQuery(sql);
         ) {
             // Cabeçalhos da tabela
-            modelo.setColumnIdentifiers(new Object[]{"Código", "Nome", "CNPJ", "Endereço", "Telefone"});
+            modelo.setColumnIdentifiers(new Object[]{"Codigo","Nome", "CNPJ", "Endereço", "Telefone"});
 
             // Preenche os dados da tabela
             while (rs.next()) {
                 modelo.addRow(new Object[]{
-                    rs.getInt("Cod_Emp"),
+                	rs.getString("Cod_Emp"),	
                     rs.getString("Nome"),
                     rs.getString("CNPJ"),
                     rs.getString("Endereco"),
@@ -98,8 +114,26 @@ public class TabelaEmpresas extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
         }
     }
-
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TabelaEmpresas());
+        SwingUtilities.invokeLater(() -> new TabelaEmpresa());
     }
+    public void atualizarDados(JTable tabela) {
+    	linha = tabela.getSelectedRow();
+    	int cod;
+    	String nome;
+    	String cnpj;
+    	String end;
+    	String tel;
+		if (linha != -1) {
+			cod = (int) tabela.getValueAt(linha, 0);
+			nome = (String) tabela.getValueAt(linha, 1);
+			cnpj = (String) tabela.getValueAt(linha, 2);
+			end = (String) tabela.getValueAt(linha, 3);
+			tel = (String) tabela.getValueAt(linha, 4);
+			
+			new AtualizarEmpresa(cod, nome, cnpj, end, tel);
+		}
+    }
+    
 }
