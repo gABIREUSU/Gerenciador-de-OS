@@ -51,12 +51,24 @@ public class TabelaEmpresa extends JFrame {
         btnExcluir.setVisible(false);
         getContentPane().add(btnExcluir);
         
+        JButton btnVoltar = new JButton("Voltar");
+        btnVoltar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new CadastroEmpresa();
+        		setVisible(false);
+        	}
+        });
+        btnVoltar.setBounds(244, 327, 89, 23);
+        getContentPane().add(btnVoltar);
+        setVisible(true);
+        
+        
         modelo = new DefaultTableModel() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Nenhuma célula será editável
+                return false;
             }
         };
         tabela = new JTable(modelo);
@@ -97,7 +109,6 @@ public class TabelaEmpresa extends JFrame {
     }
 
     private void carregarDados() {
-        // Conecta com o banco
         Conexao.conectar();
 
         String sql = "SELECT Cod_Emp, Nome, CNPJ, Endereco, Telefone FROM Empresas";
@@ -107,10 +118,8 @@ public class TabelaEmpresa extends JFrame {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
         ) {
-            // Cabeçalhos da tabela
             modelo.setColumnIdentifiers(new Object[]{"Codigo","Nome", "CNPJ", "Endereço", "Telefone"});
 
-            // Preenche os dados da tabela
             while (rs.next()) {
                 modelo.addRow(new Object[]{
                 	rs.getString("Cod_Emp"),	
@@ -145,6 +154,7 @@ public class TabelaEmpresa extends JFrame {
 			tel = (String) tabela.getValueAt(linha, 4);
 		
 			new AtualizarEmpresa(cod, nome, cnpj, end, tel);
+			setVisible(false);
 		}
     }
     

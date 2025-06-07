@@ -1,17 +1,20 @@
-package Model;
+package View;
 
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-public class MostrarImagem extends JPanel {
-    private static final long serialVersionUID = 1L;
+public class MostrarComp extends JPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Image imagem;
 
-    public MostrarImagem() {
+    public MostrarComp() {
         setOpaque(false); 
-        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/imagens/minhaImagem.png"));
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/imagens/computador.png"));
         imagem = imgIcon.getImage();
     }
 

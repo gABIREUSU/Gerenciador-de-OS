@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 class RoundButton extends JButton {
     private static final long serialVersionUID = 1L;
-    private Color normalColor = new Color(240, 240, 240);
+    private Color normalColor = new Color(0, 0, 0);
     private Color hoverColor = new Color(200, 200, 255);
 
     public RoundButton(String label) {

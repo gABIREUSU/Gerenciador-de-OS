@@ -4,8 +4,8 @@ import java.sql.*;
 import javax.swing.*;
 
 public class Conexao {
-	private static String Url = "jdbc:sqlserver://10.109.8.9:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;loginTimeout=30;";
-	//private static String Url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;";
+	//private static String Url = "jdbc:sqlserver://10.109.8.9:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;loginTimeout=30;";
+	private static String Url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;";
 	public static Connection Conexao;
 
 	public static void conectar() { // Efetua a conexão

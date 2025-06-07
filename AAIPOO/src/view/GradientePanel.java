@@ -1,4 +1,4 @@
-package Model;
+package View;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,15 +19,13 @@ public class GradientePanel extends JPanel {
         int w = getWidth();
         int h = getHeight();
 
-        
-        Color color1 = new Color(93, 12, 255);   // Roxo forte
-        Color color2 = new Color(155, 0, 250);   // Magenta claro
-        Color color3 = new Color(0, 212, 255);   // Ciano
+        // Degradê do preto ao azul escuro
+        Color color1 = Color.BLACK;                 // Preto
+        Color color2 = new Color(0, 0, 139);         // Azul escuro (Dark Blue)
 
-        float[] dist = { 0.0f, 0.5f, 1.0f };
-        Color[] colors = { color1, color2, color3 };
+        float[] dist = { 0.0f, 1.0f };
+        Color[] colors = { color1, color2 };
 
-        
         LinearGradientPaint gradient = new LinearGradientPaint(
             0, 0, w, h, dist, colors, MultipleGradientPaint.CycleMethod.NO_CYCLE
         );
@@ -37,3 +35,4 @@ public class GradientePanel extends JPanel {
         g2d.dispose();
     }
 }
+

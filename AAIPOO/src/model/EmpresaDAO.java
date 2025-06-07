@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.swing.JOptionPane;
  
 public class EmpresaDAO {
 	public void salvar(Empresa empresa) throws SQLException {
@@ -28,6 +30,7 @@ public class EmpresaDAO {
 	            stmt.setString(4, empresa.getEndereco());
 	            stmt.setString(5, empresa.getTelefone());
 	            stmt.executeUpdate();
+	            JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
 	        }
  
 	    } catch (SQLException e) {
@@ -49,7 +52,7 @@ public class EmpresaDAO {
 	        stmt.setString(4, empresa.getTelefone());
 	        stmt.setInt(5, empresa.getCod());
 	        stmt.executeUpdate();
-	   
+	        JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso");
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -65,6 +68,7 @@ public class EmpresaDAO {
 	         PreparedStatement stmt = conn.prepareStatement(sql)) {
 	        stmt.setInt(1, empresa.getCod());
 	        stmt.executeUpdate();
+	        JOptionPane.showMessageDialog(null, "Dados excluidos com sucesso");
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();

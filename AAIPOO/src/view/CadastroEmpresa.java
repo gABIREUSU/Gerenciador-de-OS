@@ -11,14 +11,12 @@ import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 
 import Controller.EmpresaController;
-import Model.DJTextField;
-import Model.GradientePanel;
-import Model.MostrarImagem;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -39,11 +37,6 @@ public class CadastroEmpresa extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setVisible(true);
-        
-        new JFrame();
-        setTitle("Cadastro de Empresa");
-        setBounds(100, 100, 600, 410);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         GradientePanel contentPanel = new GradientePanel();
         setContentPane(contentPanel);
@@ -55,34 +48,33 @@ public class CadastroEmpresa extends JFrame {
         contentPanel.add(panel);
         panel.setLayout(null);
 
-        txtNome = new DJTextField("  Nome da empresa");
+        //Inicio dos DJTextFields
+        txtNome = new DJTextField("   Nome da empresa");
         txtNome.setBounds(38, 102, 269, 20);
         panel.add(txtNome);
         addFocus(txtNome);
 
-        txtCnpj = new DJTextField("  12.345.678/0009-10");
+        txtCnpj = new DJTextField("   12.345.678/0009-10");
         txtCnpj.setBounds(38, 211, 269, 20);
         panel.add(txtCnpj);
         addFocus(txtCnpj);
 
-        txtTel = new DJTextField("  (31)98765-4321");
+        txtTel = new DJTextField("   (31)98765-4321");
         txtTel.setBounds(38, 264, 269, 20);
         panel.add(txtTel);
         addFocus(txtTel);
 
-        txtEndereco = new DJTextField("  Rua, bairro, número");
+        txtEndereco = new DJTextField("   Rua, bairro, número");
         txtEndereco.setBounds(38, 157, 269, 20);
         panel.add(txtEndereco);
         addFocus(txtEndereco);
-
-        JLabel lblNome = new JLabel("Nome");
-        lblNome.setForeground(Color.GRAY);
-        lblNome.setFont(new Font("Tahoma", Font.BOLD, 11));
-        lblNome.setBounds(38, 78, 53, 27);
-        panel.add(lblNome);
-
+        //Fim dos DJTextFields
+        
+        //Inicio dos Botões
         RoundButton btnSalvar = new RoundButton("Cadastrar");
-        btnSalvar.setBounds(194, 309, 86, 20);
+        btnSalvar.setBounds(195, 297, 86, 20);
+        btnSalvar.setForeground(Color.WHITE);
+        btnSalvar.setBackground(Color.BLACK);
         panel.add(btnSalvar);
         btnSalvar.addActionListener(e -> {
 			try {
@@ -91,13 +83,14 @@ public class CadastroEmpresa extends JFrame {
 				e1.printStackTrace();
 			}
 		});
-
-        JLabel lblTitulo = new JLabel("Vamos começar");
-        lblTitulo.setForeground(Color.BLACK);
-        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 17));
-        lblTitulo.setBounds(38, 40, 147, 27);
-        panel.add(lblTitulo);
-
+        
+        RoundButton btnLimpar = new RoundButton("Limpar");
+        btnLimpar.setBounds(62, 297, 86, 20);
+        btnLimpar.setForeground(Color.WHITE);
+        btnLimpar.setBackground(Color.BLACK);
+        panel.add(btnLimpar);
+        btnLimpar.addActionListener(e -> limpar(contentPanel));
+        
         RoundButton btnLsEmp = new RoundButton("Excluir");
         btnLsEmp.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -106,8 +99,23 @@ public class CadastroEmpresa extends JFrame {
         	}
         });
         btnLsEmp.setText("Lista de Empresas");
-        btnLsEmp.setBounds(61, 340,219, 20);
+        btnLsEmp.setBounds(62, 328,219, 20);
+        btnLsEmp.setForeground(Color.WHITE);
+        btnLsEmp.setBackground(Color.BLACK);
         panel.add(btnLsEmp);
+        //Fim dos Botões
+        
+        JLabel lblNome = new JLabel("Nome");
+        lblNome.setForeground(Color.GRAY);
+        lblNome.setFont(new Font("Tahoma", Font.BOLD, 11));
+        lblNome.setBounds(38, 78, 53, 27);
+        panel.add(lblNome);
+
+        JLabel lblTitulo = new JLabel("Vamos começar");
+        lblTitulo.setForeground(Color.BLACK);
+        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 17));
+        lblTitulo.setBounds(38, 40, 147, 27);
+        panel.add(lblTitulo);
 
         JLabel lblEndereco = new JLabel("Endereço");
         lblEndereco.setForeground(Color.GRAY);
@@ -126,11 +134,6 @@ public class CadastroEmpresa extends JFrame {
         lblTel.setFont(new Font("Tahoma", Font.BOLD, 11));
         lblTel.setBounds(38, 242, 53, 27);
         panel.add(lblTel);
-        
-                RoundButton btnLimpar = new RoundButton("Limpar");
-                btnLimpar.setBounds(61, 309, 86, 20);
-                panel.add(btnLimpar);
-                btnLimpar.addActionListener(e -> limpar(contentPanel));
 
         JLabel lblBemVindo = new JLabel("Bem-Vindo, ");
         lblBemVindo.setBounds(44, 116, 159, 27);
@@ -198,10 +201,51 @@ public class CadastroEmpresa extends JFrame {
             }
         }
     }
+    
+    boolean validarNome() {
+		String nome = txtNome.getText().trim();
+		return !nome.isEmpty() && !nome.equals("Nome da empresa");
+	}
+	
+	boolean validarEndereço() {
+		String endereco = txtEndereco.getText().trim();
+		return !endereco.isEmpty() && !endereco.equals("Rua, bairro, número");
+	}
+	
+	boolean validarCNPJ() {
+		String cnpj = txtCnpj.getText();
+		return cnpj.matches("^\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}$"); 
+	}
+
+	boolean validarTelefone() {
+		String telefone = txtTel.getText();
+
+		return telefone.matches("^\\(\\d{2}\\)\\d{4,5}-\\d{4}$");
+	}
 
     private void salvar() throws SQLException {
-        controller.salvar(txtNome.getText(), txtCnpj.getText(), txtEndereco.getText(), txtTel.getText());
-    }
+
+		if (!validarNome()) {
+			JOptionPane.showMessageDialog(this, "O nome da empresa não pode estar vazio.");
+			return;
+		}
+		
+		if(!validarEndereço()){
+			JOptionPane.showMessageDialog(this, "O Endereço não pode estar vazio.");
+			return;
+		}
+		
+		if (!validarCNPJ()) {
+			JOptionPane.showMessageDialog(this, "CNPJ deve estar no formato 99.999.999/9999-99.");
+			return;
+		}
+		if (!validarTelefone()) {
+			JOptionPane.showMessageDialog(this,"Telefone deve estar no formato (99)9999-9999 ou (99)99999-9999.");
+			return;
+		}
+
+		controller.salvar(txtNome.getText(), txtCnpj.getText(), txtEndereco.getText(), txtTel.getText());
+	}
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new CadastroEmpresa());
