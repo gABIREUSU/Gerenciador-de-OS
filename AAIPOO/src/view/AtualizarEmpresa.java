@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -14,8 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import controller.EmpresaController;
+import design.DJTextField;
+import design.GradientePanel;
+import design.RoundButton;
 
-import Controller.EmpresaController;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 

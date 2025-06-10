@@ -1,0 +1,72 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class OSDAO {
+	public List<String> carregarEmpresas() throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome FROM Empresas";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();){
+		while(rs.next()) {
+			lista.add(rs.getString("Nome"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public List<String> carregarEquipamentos(int cod) throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome_Equi FROM Equipamento WHERE Cod_Emp = ?";
+		List<String> lista = new ArrayList<>();
+		
+		try (Connection conn = Conexao.Conexao;
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();){
+			stmt.setInt(1, cod);
+			
+			while(rs.next()) {
+				lista.add(rs.getString("Nome_Equi"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+	
+	public int getCodEmp(String empresa) {
+	    Conexao.conectar();
+	    String sql = "SELECT eq.Cod_Emp FROM Equipamento eq " +
+	                 "INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp " +
+	                 "WHERE ep.Nome = ? GROUP BY eq.Cod_Emp";
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, empresa);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Emp");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
+
+	
+	
+}

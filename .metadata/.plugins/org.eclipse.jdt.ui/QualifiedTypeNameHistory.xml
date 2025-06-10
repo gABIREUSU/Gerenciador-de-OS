@@ -10,4 +10,6 @@
     <fullyQualifiedTypeName name="Model.EmpresaDAO"/>
     <fullyQualifiedTypeName name="Controller.EmpresaController"/>
     <fullyQualifiedTypeName name="View.TabelaEmpresa"/>
+    <fullyQualifiedTypeName name="java.sql.SQLException"/>
+    <fullyQualifiedTypeName name="model.Conexao"/>
 </qualifiedTypeNameHistroy>

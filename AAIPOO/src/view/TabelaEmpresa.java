@@ -1,10 +1,10 @@
-package View;
+package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import Controller.EmpresaController;
-import Model.Conexao;
+import controller.EmpresaController;
+import model.Conexao;
 
 import java.sql.*;
 import java.awt.event.ActionListener;

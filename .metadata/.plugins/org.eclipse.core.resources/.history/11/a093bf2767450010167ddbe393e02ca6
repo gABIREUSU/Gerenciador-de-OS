@@ -1,0 +1,19 @@
+package controller;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import model.OSDAO;
+
+public class OSController {
+	OSDAO dao = new OSDAO();
+	
+	public List<String> carregarEmpresas() {
+		try {
+			return dao.carregarEmpresas();
+		}catch (SQLException e) {
+			throw new RuntimeException("Erro ao buscar categorias: " + e.getMessage());
+		}
+		
+	}
+}

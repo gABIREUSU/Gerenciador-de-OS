@@ -1,12 +1,12 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
-import Model.Empresa;
-import Model.EmpresaDAO;
+import model.Empresa;
+import model.EmpresaDAO;
 
 public class EmpresaController {
 	EmpresaDAO dao = new EmpresaDAO();

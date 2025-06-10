@@ -1,0 +1,102 @@
+package view;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import controller.OSController;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import java.util.List;
+
+import javax.swing.BoxLayout;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class AberturaOS extends JFrame{
+	private static final long serialVersionUID = 1L;
+	OSController controller = new OSController();
+	JComboBox<String> CB_Empresa;
+	JComboBox<String>CB_Equip;
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new AberturaOS());
+	}
+
+	public AberturaOS() {
+		initialize();
+	}
+
+	private void initialize() {
+		setBounds(100, 100, 600, 410);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
+		
+		CB_Empresa = new JComboBox<String>();
+		CB_Empresa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				System.out.println(getCodEmp((String)CB_Empresa.getSelectedItem()););
+			}
+		});
+		CB_Empresa.setBounds(91, 42, 456, 22);
+		getContentPane().add(CB_Empresa);
+		
+		CB_Equip = new JComboBox<String>();
+		CB_Equip.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				
+			}
+		});
+		CB_Equip.setBounds(114, 80, 433, 22);
+		getContentPane().add(CB_Equip);
+		
+		carregarEmpresas();
+		
+		JLabel lblAberturadeOs = new JLabel("Abertura de Os");
+		lblAberturadeOs.setBounds(258, 11, 81, 14);
+		getContentPane().add(lblAberturadeOs);
+		
+		JLabel lblEmpresa = new JLabel("Empresa:");
+		lblEmpresa.setBounds(35, 46, 46, 14);
+		getContentPane().add(lblEmpresa);
+		
+		JLabel lblEquipamento = new JLabel("Equipamento: ");
+		lblEquipamento.setBounds(35, 84, 69, 14);
+		getContentPane().add(lblEquipamento);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(35, 124, 512, 181);
+		getContentPane().add(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		setVisible(true);
+		
+		
+	}
+	
+	public void carregarEmpresas(){
+		try {
+            List<String> empresas = controller.carregarEmpresas();
+            for (String c : empresas) {
+                CB_Empresa.addItem(c);
+            }
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
+        }
+	}
+	
+	public void carregarEquipamento() {
+		
+		
+	}
+	
+	public void getCodEmp(String Empresa){
+		int codigo = controller.getCodEmp(Empresa);
+	}
+	
+}

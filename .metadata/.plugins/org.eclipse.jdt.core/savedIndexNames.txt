@@ -2,3 +2,4 @@ INDEX VERSION 1.134+E:\Areat\OS\Gerenciador-de-OS\.metadata\.plugins\org.eclipse
 3282879041.index
 153077797.index
 1865797976.index
+2872910608.index

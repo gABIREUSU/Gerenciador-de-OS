@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import design.GradientePanel;
+import design.MostrarComp;
+import design.RoundButton;
+import design.RoundedPanel;
 
 public class Menu extends JFrame {
 

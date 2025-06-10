@@ -1,0 +1,27 @@
+package design;
+
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+public class MostrarComp extends JPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Image imagem;
+
+    public MostrarComp() {
+        setOpaque(false); 
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/imagens/computador.png"));
+        imagem = imgIcon.getImage();
+    }
+
+
+    @Override
+    protected void paintComponent(Graphics g) { 
+        super.paintComponent(g);
+        g.drawImage(imagem, 0, 0, getWidth(), getHeight(), this);
+    }
+}
