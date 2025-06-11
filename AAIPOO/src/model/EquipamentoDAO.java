@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
  
 public class EquipamentoDAO {
 	public void salvar(Equipamento equipamento) throws SQLException {
 	    Conexao.conectar();
 	    int novoCodigo = 1;
+	    
 
 	    try (Connection conn = Conexao.Conexao;
 	         Statement stmtMax = conn.createStatement();
@@ -65,6 +68,42 @@ public class EquipamentoDAO {
 	        e.printStackTrace();
 	    }
 	}
+	
+	public List<String> carregarEmpresas() throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome FROM Empresas";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();){
+		while(rs.next()) {
+			lista.add(rs.getString("Nome"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public int getCodEmp(String empresa) {
+	    Conexao.conectar();
+	    String sql = "SELECT eq.Cod_Emp FROM Equipamento eq INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp WHERE ep.Nome = ? GROUP BY eq.Cod_Emp";
 
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, empresa);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Emp");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
 	
 }

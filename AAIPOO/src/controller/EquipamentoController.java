@@ -1,6 +1,7 @@
 package controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -44,6 +45,17 @@ public class EquipamentoController {
 	    );
 
 	    return resultado == 0 && checkBox.isSelected();
+	}
+	
+	public List<String> carregarEmpresas() {
+		try {
+			return dao.carregarEmpresas();
+		}catch (SQLException e) {
+			throw new RuntimeException("Erro ao buscar empresas: " + e.getMessage());
+		}
+	}
+	public int getCodEmp(String Empresa) {
+		return dao.getCodEmp(Empresa);
 	}
 
 }

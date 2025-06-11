@@ -1,0 +1,123 @@
+package View;
+
+import java.awt.*;
+import Controller.EquipamentoController;
+import java.awt.event.*;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.swing.*;
+
+public class CadastroEquipamento extends JFrame {
+    private static final long serialVersionUID = 1L;
+
+    private DJTextField txtNome;
+    private JComboBox<String> comboEmpresas;
+    private EquipamentoController controller = new EquipamentoController();
+
+    public CadastroEquipamento() {
+        setTitle("Cadastro de Equipamento");
+        setSize(600, 300);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        GradientePanel painel = new GradientePanel();
+        painel.setLayout(null);
+        painel.setBounds(0, 0, 600, 300);
+
+        JLabel titulo = new JLabel("Cadastro de Equipamento");
+        titulo.setForeground(new Color(255, 255, 255));
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        titulo.setBounds(147, 11, 273, 30);
+        painel.add(titulo);
+
+        txtNome = new DJTextField("    Nome do Equipamento");
+        txtNome.setBounds(147, 123, 240, 30);
+        painel.add(txtNome);
+        addFocus(txtNome);
+
+        JLabel lblEmpresa = new JLabel("Empresa:");
+        lblEmpresa.setForeground(Color.WHITE);
+        lblEmpresa.setBounds(147, 52, 240, 20);
+        painel.add(lblEmpresa);
+
+        comboEmpresas = new JComboBox<>();
+        comboEmpresas.setBounds(147, 72, 240, 30);
+        painel.add(comboEmpresas);
+        carregarEmpresas();
+
+        RoundButton btnLimpar = new RoundButton("Limpar");
+        btnLimpar.setBounds(100, 185, 86, 30);
+        btnLimpar.setForeground(Color.BLACK);
+        btnLimpar.setBackground(Color.WHITE);
+        painel.add(btnLimpar);
+        btnLimpar.addActionListener(e -> {
+            txtNome.setTxPadrao();
+            comboEmpresas.setSelectedIndex(0);
+        });
+
+        RoundButton btnSalvar = new RoundButton("Salvar");
+        btnSalvar.setBounds(352, 185, 100, 30);
+        btnSalvar.setForeground(Color.BLACK);
+        btnSalvar.setBackground(Color.WHITE);
+        painel.add(btnSalvar);
+        btnSalvar.addActionListener(e -> salvarEquipamento());
+
+        getContentPane().add(painel);
+    }
+
+    private void carregarEmpresas() {
+        try {
+            List<String> empresas = controller.carregarEmpresas();
+            for (String empresa : empresas) {
+                comboEmpresas.addItem(empresa);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar empresas: " + e.getMessage());
+        }
+    }
+
+    private void addFocus(DJTextField txt) {
+        txt.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txt.DfocusGained();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                txt.DfocusLost();
+            }
+        });
+    }
+
+    private void salvarEquipamento() {
+        String nome = txtNome.getText().trim();
+        String nomeEmpresa = (String) comboEmpresas.getSelectedItem();
+
+        if (nome.isEmpty() || nomeEmpresa == null || nomeEmpresa.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+            return;
+        }
+
+        try {
+            int codEmp = controller.getCodEmp(nomeEmpresa);
+            if (codEmp == -1) {
+                JOptionPane.showMessageDialog(null, "Empresa não encontrada.");
+                return;
+            }
+
+            controller.salvar(nome, codEmp);
+            JOptionPane.showMessageDialog(null, "Equipamento salvo com sucesso!");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao salvar: " + ex.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new CadastroEquipamento().setVisible(true);
+        });
+    }
+}
