@@ -89,6 +89,7 @@ public class TelaConsulta extends JFrame {
         cbFiltros.setSelectedIndex(0);
         txtFiltroValor.setText("");
 
+        // Se for "ItensPorOS", já exibe o campo de texto
         if (tabelaSelecionada.toString().equals("ItensPorOS")) {
             txtFiltroValor.setVisible(true);
         } else {

@@ -131,12 +131,13 @@ public class EquipamentoDAO {
 		return lista;
 	}
 
-	public int getCodEmp(String nomeEmpresa) {
+	public int getCodEmp(String empresa) {
 		Conexao.conectar();
-		String sql = "SELECT Cod_Emp FROM Empresas WHERE Nome = ?";
+		String sql = "SELECT eq.Cod_Emp FROM Equipamento eq INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp WHERE ep.Nome = ? GROUP BY eq.Cod_Emp";
 
 		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, nomeEmpresa);
+
+			stmt.setString(1, empresa);
 			ResultSet rs = stmt.executeQuery();
 
 			if (rs.next()) {
@@ -148,6 +149,5 @@ public class EquipamentoDAO {
 		}
 		return -1;
 	}
-
 
 }

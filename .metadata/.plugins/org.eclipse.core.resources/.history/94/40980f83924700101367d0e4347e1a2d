@@ -1,0 +1,132 @@
+package view;
+
+import controller.TelaConsultaController;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.*;
+
+public class TelaConsulta extends JFrame {
+	private static final long serialVersionUID = 1L;
+
+	private JComboBox<String> cbTabelas;
+	private JComboBox<String> cbFiltros;
+	private JTextField txtFiltroValor;
+	private JTable tabela;
+	private DefaultTableModel tableModel;
+	private TelaConsultaController controller;
+
+	private final Map<String, String[]> filtrosPorTabela = Map.of(
+		"Empresas", new String[] { "Todos", "Nome", "CNPJ" },
+		"Equipamento", new String[] { "Todos", "NomeEquip", "NomeEmpresa" },
+		"OS", new String[] { "Todos", "Data", "NomeEquip", "NomeEmpresa" },
+		"ItensPorOS", new String[] { "CodOS" }
+	);
+
+	public TelaConsulta() {
+		controller = new TelaConsultaController();
+
+		setTitle("Consulta com Filtros");
+		setSize(650, 450);
+		getContentPane().setLayout(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JLabel lblTabela = new JLabel("Tabela:");
+		lblTabela.setBounds(20, 20, 50, 25);
+		getContentPane().add(lblTabela);
+
+		cbTabelas = new JComboBox<>(filtrosPorTabela.keySet().toArray(new String[0]));
+		cbTabelas.setBounds(64, 20, 120, 25);
+		getContentPane().add(cbTabelas);
+
+		JLabel lblFiltro = new JLabel("Filtro:");
+		lblFiltro.setBounds(194, 20, 50, 25);
+		getContentPane().add(lblFiltro);
+
+		cbFiltros = new JComboBox<>();
+		cbFiltros.setBounds(238, 20, 110, 25);
+		getContentPane().add(cbFiltros);
+
+		txtFiltroValor = new JTextField();
+		txtFiltroValor.setBounds(360, 20, 130, 25);
+		getContentPane().add(txtFiltroValor);
+
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(500, 20, 100, 25);
+		getContentPane().add(btnBuscar);
+
+		tableModel = new DefaultTableModel();
+		tabela = new JTable(tableModel);
+		JScrollPane scroll = new JScrollPane(tabela);
+		scroll.setBounds(20, 70, 600, 300);
+		getContentPane().add(scroll);
+
+		cbTabelas.addActionListener(e -> atualizarFiltros());
+
+		cbFiltros.addActionListener(e -> {
+			Object selectedItem = cbFiltros.getSelectedItem();
+			if (selectedItem != null) {
+				txtFiltroValor.setVisible(!selectedItem.toString().equals("Todos"));
+			} else {
+				txtFiltroValor.setVisible(false);
+			}
+		});
+
+		btnBuscar.addActionListener(e -> buscarDados());
+
+		atualizarFiltros();
+	}
+
+	private void atualizarFiltros() {
+		Object tabelaSelecionada = cbTabelas.getSelectedItem();
+		if (tabelaSelecionada == null)
+			return;
+
+		cbFiltros.removeAllItems();
+		String[] filtros = filtrosPorTabela.getOrDefault(tabelaSelecionada.toString(), new String[0]);
+
+		for (String filtro : filtros) {
+			cbFiltros.addItem(filtro);
+		}
+
+		cbFiltros.setSelectedIndex(0);
+		txtFiltroValor.setVisible(false);
+	}
+
+	private void buscarDados() {
+		String tabela = (String) cbTabelas.getSelectedItem();
+		String filtro = (String) cbFiltros.getSelectedItem();
+		String valor = txtFiltroValor.getText().trim();
+
+		List<Object[]> dados = new ArrayList<>();
+		String[] colunas;
+
+		if ("ItensPorOS".equals(tabela) && filtro.equals("CodOS")) {
+			int codOS;
+			try {
+				codOS = Integer.parseInt(valor);
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, "Digite um código de OS válido.");
+				return;
+			}
+			dados = controller.buscarItensPorOS(codOS);
+			colunas = new String[] { "Cod_Item", "Descricao", "Preco", "Quantidade" };
+		} else {
+			dados = controller.buscarDados(tabela, filtro, valor);
+			colunas = controller.getColunas(tabela);
+		}
+
+		atualizarTabela(colunas, dados);
+	}
+
+	private void atualizarTabela(String[] colunas, List<Object[]> dados) {
+		tableModel.setRowCount(0);
+		tableModel.setColumnIdentifiers(colunas);
+		for (Object[] linha : dados) {
+			tableModel.addRow(linha);
+		}
+	}
+
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new TelaConsulta().setVisible(true));
+	}
+}

@@ -88,14 +88,8 @@ public class TelaConsulta extends JFrame {
 
         cbFiltros.setSelectedIndex(0);
         txtFiltroValor.setText("");
-
-        if (tabelaSelecionada.toString().equals("ItensPorOS")) {
-            txtFiltroValor.setVisible(true);
-        } else {
-            txtFiltroValor.setVisible(false);
-        }
+        txtFiltroValor.setVisible(false);
     }
-
 
     private void buscarDados() {
         Object tabelaObj = cbTabelas.getSelectedItem();

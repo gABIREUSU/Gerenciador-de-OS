@@ -1,0 +1,40 @@
+package model;
+
+import java.sql.*;
+import java.util.*;
+
+import model.Conexao;
+
+public class TelaConsultaDAO {
+
+	// ... métodos anteriores omitidos para brevidade
+
+	public List<Object[]> consultarItensPorOS(int codOS) {
+		Conexao.conectar();
+		List<Object[]> lista = new ArrayList<>();
+		String sql = "SELECT i.Cod_Item, i.Descricao, i.Preco, oi.Quantidade " +
+				"FROM OSxItem oi " +
+				"JOIN Item i ON oi.Cod_Item = i.Cod_Item " +
+				"WHERE oi.Cod_OS = ?";
+
+		try (Connection conn = Conexao.Conexao;
+				PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, codOS);
+			ResultSet rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				lista.add(new Object[] {
+					rs.getInt("Cod_Item"),
+					rs.getString("Descricao"),
+					rs.getBigDecimal("Preco"),
+					rs.getInt("Quantidade")
+				});
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+}

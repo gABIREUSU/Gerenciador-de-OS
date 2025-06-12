@@ -1,4 +1,3 @@
-
 package model;
 
 import java.sql.*;
@@ -6,93 +5,105 @@ import java.util.*;
 
 public class TelaConsultaDAO {
 
-	public List<Object[]> consultarEmpresasFiltro(String campo, String valor) {
-		Conexao.conectar();
-		List<Object[]> lista = new ArrayList<>();
-		String sql = "SELECT * FROM Empresas";
+    public List<Object[]> consultarEmpresasFiltro(String campo, String valor) {
+        Conexao.conectar();
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Empresas";
 
-		if (!campo.equals("Todos")) {
-			sql += " WHERE " + campo + " LIKE ?";
-		}
+        if (!campo.equals("Todos")) sql += " WHERE " + campo + " LIKE ?";
 
-		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
-			if (!campo.equals("Todos")) {
-				stmt.setString(1, "%" + valor + "%");
-			}
+        try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (!campo.equals("Todos")) stmt.setString(1, "%" + valor + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                lista.add(new Object[]{rs.getInt("Cod_Emp"), rs.getString("Nome"), rs.getString("CNPJ"),
+                        rs.getString("Endereco"), rs.getString("Telefone")});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				lista.add(new Object[] { rs.getInt("Cod_Emp"), rs.getString("Nome"), rs.getString("CNPJ"),
-						rs.getString("Endereco"), rs.getString("Telefone") });
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        return lista;
+    }
 
-		return lista;
-	}
+    public List<Object[]> consultarEquipamentosFiltro(String campo, String valor) {
+        Conexao.conectar();
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT e.Cod_Equip, emp.Nome as NomeEmpresa, e.Nome_Equip FROM Equipamento e " +
+                "JOIN Empresas emp ON e.Cod_Emp = emp.Cod_Emp";
 
-	public List<Object[]> consultarEquipamentosFiltro(String campo, String valor) {
-		Conexao.conectar();
-		List<Object[]> lista = new ArrayList<>();
-		String sql = "SELECT e.Cod_Equip, emp.Nome as NomeEmpresa, e.Nome_Equip FROM Equipamento e JOIN Empresas emp ON e.Cod_Emp = emp.Cod_Emp";
+        if (!campo.equals("Todos")) {
+            if (campo.equals("NomeEmpresa")) campo = "emp.Nome";
+            else if (campo.equals("NomeEquip")) campo = "e.Nome_Equip";
+            sql += " WHERE " + campo + " LIKE ?";
+        }
 
-		if (!campo.equals("Todos")) {
-			if (campo.equals("NomeEmpresa"))
-				campo = "emp.Nome";
-			else if (campo.equals("NomeEquip"))
-				campo = "e.Nome_Equip";
-			sql += " WHERE " + campo + " LIKE ?";
-		}
+        try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (!campo.equals("Todos")) stmt.setString(1, "%" + valor + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                lista.add(new Object[]{rs.getInt("Cod_Equip"), rs.getString("NomeEmpresa"),
+                        rs.getString("Nome_Equip")});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
-			if (!campo.equals("Todos")) {
-				stmt.setString(1, "%" + valor + "%");
-			}
+        return lista;
+    }
 
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				lista.add(new Object[] { rs.getInt("Cod_Equip"), rs.getString("NomeEmpresa"),
-						rs.getString("Nome_Equip") });
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    public List<Object[]> consultarOSFiltro(String campo, String valor) {
+        Conexao.conectar();
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT o.Cod_OS, eq.Nome_Equip, emp.Nome as NomeEmpresa, o.Data, o.Preco " +
+                "FROM OS o " +
+                "JOIN Equipamento eq ON o.Cod_Equip = eq.Cod_Equip " +
+                "JOIN Empresas emp ON eq.Cod_Emp = emp.Cod_Emp";
 
-		return lista;
-	}
+        if (!campo.equals("Todos")) {
+            if (campo.equals("NomeEquip")) campo = "eq.Nome_Equip";
+            else if (campo.equals("NomeEmpresa")) campo = "emp.Nome";
+            else if (campo.equals("Data")) campo = "o.Data";
+            sql += " WHERE " + campo + " LIKE ?";
+        }
 
-	public List<Object[]> consultarOSFiltro(String campo, String valor) {
-		Conexao.conectar();
-		List<Object[]> lista = new ArrayList<>();
-		String sql = "SELECT o.Cod_OS, eq.Nome_Equip, emp.Nome as NomeEmpresa, o.Data, o.Preco " + "FROM OS o "
-				+ "JOIN Equipamento eq ON o.Cod_Equip = eq.Cod_Equip "
-				+ "JOIN Empresas emp ON eq.Cod_Emp = emp.Cod_Emp";
+        try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            if (!campo.equals("Todos")) stmt.setString(1, "%" + valor + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                lista.add(new Object[]{rs.getInt("Cod_OS"), rs.getString("Nome_Equip"),
+                        rs.getString("NomeEmpresa"), rs.getString("Data"), rs.getBigDecimal("Preco")});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		if (!campo.equals("Todos")) {
-			if (campo.equals("NomeEquip"))
-				campo = "eq.Nome_Equip";
-			else if (campo.equals("NomeEmpresa"))
-				campo = "emp.Nome";
-			else if (campo.equals("Data"))
-				campo = "o.Data";
-			sql += " WHERE " + campo + " LIKE ?";
-		}
+        return lista;
+    }
 
-		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
-			if (!campo.equals("Todos")) {
-				stmt.setString(1, "%" + valor + "%");
-			}
+    public List<Object[]> consultarItensPorOS(int codOS) {
+        Conexao.conectar();
+        List<Object[]> lista = new ArrayList<>();
+        String sql = "SELECT i.Cod_Item, i.Descricao, i.Tipo, i.Preco " +
+                "FROM OSxItem oi " +
+                "JOIN Item i ON oi.Cod_Item = i.Cod_Item " +
+                "WHERE oi.Cod_OS = ?";
 
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				lista.add(new Object[] { rs.getInt("Cod_OS"), rs.getString("Nome_Equip"), rs.getString("NomeEmpresa"),
-						rs.getString("Data"), rs.getBigDecimal("Preco") });
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, codOS);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                lista.add(new Object[]{
+                        rs.getInt("Cod_Item"),
+                        rs.getString("Descricao"),
+                        rs.getString("Tipo"),
+                        rs.getBigDecimal("Preco")
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		return lista;
-	}
+        return lista;
+    }
 }

@@ -17,10 +17,10 @@ public class TelaConsulta extends JFrame {
     private TelaConsultaController controller;
 
     private final Map<String, String[]> filtrosPorTabela = Map.of(
-            "Empresas", new String[]{"Todos", "Nome", "CNPJ"},
-            "Equipamento", new String[]{"Todos", "NomeEquip", "NomeEmpresa"},
-            "OS", new String[]{"Todos", "Data", "NomeEquip", "NomeEmpresa"},
-            "ItensPorOS", new String[]{"CodOS"}
+            "Empresas", new String[] { "Todos", "Nome", "CNPJ" },
+            "Equipamento", new String[] { "Todos", "NomeEquip", "NomeEmpresa" },
+            "OS", new String[] { "Todos", "Data", "NomeEquip", "NomeEmpresa" },
+            "ItensPorOS", new String[] { "CodOS" }
     );
 
     public TelaConsulta() {
@@ -65,11 +65,7 @@ public class TelaConsulta extends JFrame {
 
         cbFiltros.addActionListener(e -> {
             Object selectedItem = cbFiltros.getSelectedItem();
-            if (selectedItem != null) {
-                txtFiltroValor.setVisible(!selectedItem.toString().equals("Todos"));
-            } else {
-                txtFiltroValor.setVisible(false);
-            }
+            txtFiltroValor.setVisible(!selectedItem.toString().equals("Todos"));
         });
 
         btnBuscar.addActionListener(e -> buscarDados());
@@ -87,55 +83,27 @@ public class TelaConsulta extends JFrame {
         for (String filtro : filtros) cbFiltros.addItem(filtro);
 
         cbFiltros.setSelectedIndex(0);
-        txtFiltroValor.setText("");
-
-        if (tabelaSelecionada.toString().equals("ItensPorOS")) {
-            txtFiltroValor.setVisible(true);
-        } else {
-            txtFiltroValor.setVisible(false);
-        }
+        txtFiltroValor.setVisible(false);
     }
 
-
     private void buscarDados() {
-        Object tabelaObj = cbTabelas.getSelectedItem();
-        Object filtroObj = cbFiltros.getSelectedItem();
-
-        if (tabelaObj == null || filtroObj == null) {
-            JOptionPane.showMessageDialog(this, "Selecione uma tabela e um filtro.");
-            return;
-        }
-
-        String tabelaSelecionada = tabelaObj.toString();
-        String campoFiltro = filtroObj.toString();
+        String tabelaSelecionada = cbTabelas.getSelectedItem().toString();
+        String campoFiltro = cbFiltros.getSelectedItem().toString();
         String valorFiltro = txtFiltroValor.getText().trim();
 
-        if (!campoFiltro.equals("Todos") && valorFiltro.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe um valor para o filtro.");
-            return;
+        List<Object[]> dados;
+        String[] colunas;
+
+        if (tabelaSelecionada.equals("ItensPorOS")) {
+            int codOS = Integer.parseInt(valorFiltro);
+            dados = controller.buscarItensPorOS(codOS);
+            colunas = new String[] { "Cod_Item", "Descricao", "Tipo", "Preco" };
+        } else {
+            dados = controller.buscarDados(tabelaSelecionada, campoFiltro, valorFiltro);
+            colunas = controller.getColunas(tabelaSelecionada);
         }
 
-        try {
-            List<Object[]> dados;
-            String[] colunas;
-
-            if (tabelaSelecionada.equals("ItensPorOS")) {
-                int codOS = Integer.parseInt(valorFiltro);
-                dados = controller.buscarItensPorOS(codOS);
-                colunas = new String[]{"Cod_Item", "Descricao", "Tipo", "Preco"};
-            } else {
-                dados = controller.buscarDados(tabelaSelecionada, campoFiltro, valorFiltro);
-                colunas = controller.getColunas(tabelaSelecionada);
-            }
-
-            atualizarTabela(colunas, dados);
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "O valor informado deve ser numérico.");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao buscar dados: " + ex.getMessage());
-            ex.printStackTrace();
-        }
+        atualizarTabela(colunas, dados);
     }
 
     private void atualizarTabela(String[] colunas, List<Object[]> dados) {
