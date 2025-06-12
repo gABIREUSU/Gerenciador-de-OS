@@ -8,43 +8,42 @@ import model.OSDAO;
 
 public class OSController {
 	OSDAO dao = new OSDAO();
-	
+
 	public List<String> carregarEmpresas() {
 		try {
 			return dao.carregarEmpresas();
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new RuntimeException("Erro ao buscar empresas: " + e.getMessage());
 		}
-		
+
 	}
-	
-	public List<String> carregarEquipamentos(int cod){
+
+	public List<String> carregarEquipamentos(int cod) {
 		try {
 			return dao.carregarEquipamentos(cod);
 		} catch (SQLException e) {
 			throw new RuntimeException("Erro ao buscar equipamentos: " + e.getMessage());
 		}
 	}
-	
-	public List<String> carregarItens(char x) throws SQLException{
+
+	public List<String> carregarItens(char x) throws SQLException {
 		return dao.carregarItens(x);
 	}
 
-	
 	public int getCodEmp(String Empresa) {
 		return dao.getCodEmp(Empresa);
 	}
-	
-	public int getCodEquip(String equipamento,String empresa) {
+
+	public int getCodEquip(String equipamento, String empresa) {
 		return dao.getCodEquip(equipamento, empresa);
 	}
-	
+
 	public float setPreco(List<String> lista) {
 		return dao.setPreco(lista);
 	}
-	
-	public void salvar(int Cod_Equip,String Data,float preco, List<String> servicos) throws SQLException {
-		OS os = new OS(Cod_Equip, Data,preco);
-		dao.salvar(os,servicos);
+
+	public void salvar(int Cod_Equip, String Data, float preco, List<String> servicos) throws SQLException {
+		OS os = new OS(Cod_Equip, Data, preco);
+		dao.salvar(os, servicos);
 	}
 }

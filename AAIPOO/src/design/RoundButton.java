@@ -12,40 +12,39 @@ import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
 public class RoundButton extends JButton {
-    private static final long serialVersionUID = 1L;
-    private Color normalColor = new Color(0, 0, 0);
-    private Color hoverColor = new Color(200, 200, 255);
+	private static final long serialVersionUID = 1L;
+	private Color normalColor = new Color(0, 0, 0);
+	private Color hoverColor = new Color(200, 200, 255);
 
-    public RoundButton(String label) {
-        super(label);
-        setContentAreaFilled(false);
-        setFocusPainted(false);
-        setBorder(new EmptyBorder(10, 10, 10, 10));
-        setBackground(normalColor);
-        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	public RoundButton(String label) {
+		super(label);
+		setContentAreaFilled(false);
+		setFocusPainted(false);
+		setBorder(new EmptyBorder(10, 10, 10, 10));
+		setBackground(normalColor);
+		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-       
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setBackground(hoverColor);
-            }
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setBackground(hoverColor);
+			}
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(normalColor);
-            }
-        });
-    }
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setBackground(normalColor);
+			}
+		});
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
-        super.paintComponent(g);
-        g2.dispose();
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setColor(getBackground());
+		g2.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
+		super.paintComponent(g);
+		g2.dispose();
+	}
 
 }

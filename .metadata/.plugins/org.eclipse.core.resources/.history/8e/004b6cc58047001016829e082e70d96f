@@ -1,0 +1,75 @@
+package model;
+
+import java.sql.*;
+import java.util.*;
+
+public class TelaConsultaDAO {
+
+    private Connection conn;
+
+    public List<String> consultarEmpresas(String filtro) {
+        List<String> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Empresas WHERE Nome LIKE ? OR CNPJ LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + filtro + "%");
+            stmt.setString(2, "%" + filtro + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                lista.add("Código: " + rs.getInt("Cod_Emp")
+                        + ", Nome: " + rs.getString("Nome")
+                        + ", CNPJ: " + rs.getString("CNPJ")
+                        + ", Endereço: " + rs.getString("Endereco")
+                        + ", Telefone: " + rs.getString("Telefone"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    public List<String> consultarEquipamentos(String filtro) {
+        List<String> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Equipamento WHERE Nome_Equip LIKE ? OR Cod_Emp LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + filtro + "%");
+            stmt.setString(2, "%" + filtro + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                lista.add("Código: " + rs.getInt("Cod_Equip")
+                        + ", Nome: " + rs.getString("Nome_Equip")
+                        + ", Empresa: " + rs.getInt("Cod_Emp"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    public List<String> consultarOS(String filtro) {
+        List<String> lista = new ArrayList<>();
+        String sql = "SELECT * FROM OS WHERE Data LIKE ? OR Cod_Equip LIKE ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + filtro + "%");
+            stmt.setString(2, "%" + filtro + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                lista.add("Código: " + rs.getInt("Cod_OS")
+                        + ", Equipamento: " + rs.getInt("Cod_Equip")
+                        + ", Data: " + rs.getString("Data")
+                        + ", Preço: R$ " + rs.getBigDecimal("Preco"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+}

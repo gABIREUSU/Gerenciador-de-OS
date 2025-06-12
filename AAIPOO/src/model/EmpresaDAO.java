@@ -1,5 +1,5 @@
 package model;
- 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,73 +7,69 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JOptionPane;
- 
+
 public class EmpresaDAO {
 	public void salvar(Empresa empresa) throws SQLException {
-	    Conexao.conectar();
-	    int novoCodigo = 1;
- 
-	    try (Connection conn = Conexao.Conexao;
-	         Statement stmtMax = conn.createStatement();
-	         ResultSet result = stmtMax.executeQuery("SELECT MAX(Cod_Emp) AS ultimo_id FROM Empresas")) {
- 
-	        if (result.next()) {
-	            novoCodigo = result.getInt("ultimo_id") + 1;
-	        }
- 
- 
-	        String sql = "INSERT INTO Empresas (Cod_Emp, Nome, CNPJ, Endereco, Telefone) VALUES (?, ?, ?, ?, ?)";
-	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            stmt.setInt(1, novoCodigo);
-	            stmt.setString(2, empresa.getNome());
-	            stmt.setString(3, empresa.getCnpj());
-	            stmt.setString(4, empresa.getEndereco());
-	            stmt.setString(5, empresa.getTelefone());
-	            stmt.executeUpdate();
-	            JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
-	        }
- 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		Conexao.conectar();
+		int novoCodigo = 1;
+
+		try (Connection conn = Conexao.Conexao;
+				Statement stmtMax = conn.createStatement();
+				ResultSet result = stmtMax.executeQuery("SELECT MAX(Cod_Emp) AS ultimo_id FROM Empresas")) {
+
+			if (result.next()) {
+				novoCodigo = result.getInt("ultimo_id") + 1;
+			}
+
+			String sql = "INSERT INTO Empresas (Cod_Emp, Nome, CNPJ, Endereco, Telefone) VALUES (?, ?, ?, ?, ?)";
+			try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+				stmt.setInt(1, novoCodigo);
+				stmt.setString(2, empresa.getNome());
+				stmt.setString(3, empresa.getCnpj());
+				stmt.setString(4, empresa.getEndereco());
+				stmt.setString(5, empresa.getTelefone());
+				stmt.executeUpdate();
+				JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void atualizar(Empresa empresa) throws SQLException {
-	    String sql = "UPDATE Empresas SET Nome = ?, CNPJ = ?, Endereco = ?, Telefone = ? WHERE Cod_Emp = ?";
+		String sql = "UPDATE Empresas SET Nome = ?, CNPJ = ?, Endereco = ?, Telefone = ? WHERE Cod_Emp = ?";
 
-	    Conexao.conectar();
+		Conexao.conectar();
 
-	    try (Connection conn = Conexao.Conexao;
-	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-	        stmt.setString(1, empresa.getNome());
-	        stmt.setString(2, empresa.getCnpj());
-	        stmt.setString(3, empresa.getEndereco());
-	        stmt.setString(4, empresa.getTelefone());
-	        stmt.setInt(5, empresa.getCod());
-	        stmt.executeUpdate();
-	        JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso");
+			stmt.setString(1, empresa.getNome());
+			stmt.setString(2, empresa.getCnpj());
+			stmt.setString(3, empresa.getEndereco());
+			stmt.setString(4, empresa.getTelefone());
+			stmt.setInt(5, empresa.getCod());
+			stmt.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso");
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void excluir(Empresa empresa) throws SQLException {
-	    String sql = "DELETE FROM Empresas WHERE Cod_Emp = ?";
+		String sql = "DELETE FROM Empresas WHERE Cod_Emp = ?";
 
-	    Conexao.conectar();
+		Conexao.conectar();
 
-	    try (Connection conn = Conexao.Conexao;
-	         PreparedStatement stmt = conn.prepareStatement(sql)) {
-	        stmt.setInt(1, empresa.getCod());
-	        stmt.executeUpdate();
-	        JOptionPane.showMessageDialog(null, "Dados excluidos com sucesso");
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, empresa.getCod());
+			stmt.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Dados excluidos com sucesso");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	
+
 }

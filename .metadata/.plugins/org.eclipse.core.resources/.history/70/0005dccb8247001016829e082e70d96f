@@ -1,0 +1,94 @@
+package model;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public List<Object[]> consultarEmpresasFiltro(String campo, String valor) {
+    List<Object[]> lista = new ArrayList<>();
+    String sql = "SELECT * FROM Empresas";
+
+    if (!campo.equals("Todos")) {
+        sql += " WHERE " + campo + " LIKE ?";
+    }
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (!campo.equals("Todos")) {
+            stmt.setString(1, "%" + valor + "%");
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            lista.add(new Object[]{
+                    rs.getInt("Cod_Emp"),
+                    rs.getString("Nome"),
+                    rs.getString("CNPJ"),
+                    rs.getString("Endereco"),
+                    rs.getString("Telefone")
+            });
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
+
+public List<Object[]> consultarEquipamentosFiltro(String campo, String valor) {
+    List<Object[]> lista = new ArrayList<>();
+    String sql = "SELECT * FROM Equipamento";
+
+    if (!campo.equals("Todos")) {
+        sql += " WHERE " + campo + " LIKE ?";
+    }
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (!campo.equals("Todos")) {
+            stmt.setString(1, "%" + valor + "%");
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            lista.add(new Object[]{
+                    rs.getInt("Cod_Equip"),
+                    rs.getInt("Cod_Emp"),
+                    rs.getString("Nome_Equip")
+            });
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
+
+public List<Object[]> consultarOSFiltro(String campo, String valor) {
+    List<Object[]> lista = new ArrayList<>();
+    String sql = "SELECT * FROM OS";
+
+    if (!campo.equals("Todos")) {
+        sql += " WHERE " + campo + " LIKE ?";
+    }
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (!campo.equals("Todos")) {
+            stmt.setString(1, "%" + valor + "%");
+        }
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            lista.add(new Object[]{
+                    rs.getInt("Cod_OS"),
+                    rs.getInt("Cod_Equip"),
+                    rs.getString("Data"),
+                    rs.getBigDecimal("Preco")
+            });
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}

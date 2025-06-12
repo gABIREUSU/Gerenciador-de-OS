@@ -98,7 +98,7 @@ public class AberturaOS extends JFrame {
 			}
 		});
 		getContentPane().add(btnAdicionarItem);
-		
+
 		JButton btnSalvar = new JButton("Salvar");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -236,11 +236,12 @@ public class AberturaOS extends JFrame {
 		}
 		return selecionados;
 	}
-	
+
 	public void salvar() throws SQLException {
 		LocalDate hoje = LocalDate.now();
 		String dataFormatada = hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		int cod_equip = controller.getCodEquip((String)CB_Equip.getSelectedItem(), (String)CB_Empresa.getSelectedItem());
-		controller.salvar(cod_equip, dataFormatada, preco,getValoresSelecionados());
+		int cod_equip = controller.getCodEquip((String) CB_Equip.getSelectedItem(),
+				(String) CB_Empresa.getSelectedItem());
+		controller.salvar(cod_equip, dataFormatada, preco, getValoresSelecionados());
 	}
 }

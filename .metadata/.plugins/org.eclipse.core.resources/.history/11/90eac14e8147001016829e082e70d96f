@@ -1,0 +1,67 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.*;
+import java.util.List;
+
+public class TelaConsultaComFiltros extends JFrame {
+
+    private JComboBox<String> cbTabelas;
+    private JTextField txtFiltro;
+    private JTable tabela;
+    private DefaultTableModel tableModel;
+    private TelaConsultaDAO dao = new TelaConsultaDAO();
+
+    public TelaConsultaComFiltros() {
+        setTitle("Consulta com Filtros");
+        setSize(700, 500);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel lblTabela = new JLabel("Tabela:");
+        lblTabela.setBounds(20, 20, 50, 25);
+        add(lblTabela);
+
+        cbTabelas = new JComboBox<>(new String[]{"Empresas", "Equipamento", "OS"});
+        cbTabelas.setBounds(80, 20, 150, 25);
+        add(cbTabelas);
+
+        JLabel lblFiltro = new JLabel("Filtro:");
+        lblFiltro.setBounds(250, 20, 50, 25);
+        add(lblFiltro);
+
+        txtFiltro = new JTextField();
+        txtFiltro.setBounds(300, 20, 200, 25);
+        add(txtFiltro);
+
+        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(520, 20, 100, 25);
+        add(btnBuscar);
+
+        tableModel = new DefaultTableModel();
+        tabela = new JTable(tableModel);
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setBounds(20, 70, 640, 370);
+        add(scroll);
+
+        btnBuscar.addActionListener(e -> buscarDados());
+    }
+
+    private void buscarDados() {
+        String tabelaSelecionada = cbTabelas.getSelectedItem().toString();
+        String filtro = txtFiltro.getText().trim();
+        List<Object[]> dados = null;
+        String[] colunas;
+
+        switch (tabelaSelecionada) {
+            case "Empresas":
+                colunas = new String[]{"Cod_Emp", "Nome", "CNPJ", "Endereco", "Telefone"};
+                dados = dao.consultarEmpresas(filtro);
+                break;
+            case "Equipamento":
+                colunas = new String[]{"Cod_Equip", "Cod_Emp", "Nome_Equip"};
+                dados = dao.consultarEquipamentos(filtro);
+                break;
+            case "OS":
+                colunas = new String[]{"Cod_OS", "Cod_Equip", "Data", "Preco"};
+                dados = dao.consultarOS(filtro);
+                break;

@@ -5,37 +5,44 @@ public class OS {
 	private int Cod_Equip;
 	private String Data;
 	private float preco;
-	
+
 	public int getCod_OS() {
 		return Cod_OS;
 	}
+
 	public void setCod_OS(int cod_OS) {
 		Cod_OS = cod_OS;
 	}
+
 	public int getCod_Equip() {
 		return Cod_Equip;
 	}
+
 	public void setCod_Equip(int cod_Equip) {
 		Cod_Equip = cod_Equip;
 	}
+
 	public String getData() {
 		return Data;
 	}
+
 	public void setData(String data) {
 		Data = data;
 	}
+
 	public float getPreco() {
 		return preco;
 	}
+
 	public void setPreco(float preco) {
 		this.preco = preco;
 	}
+
 	public OS(int cod_Equip, String data, float preco) {
 		super();
 		setCod_Equip(cod_Equip);
 		setData(data);
 		setPreco(preco);
 	}
-	
-	
+
 }

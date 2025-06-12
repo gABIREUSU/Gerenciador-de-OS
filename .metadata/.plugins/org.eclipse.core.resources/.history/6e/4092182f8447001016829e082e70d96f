@@ -1,0 +1,121 @@
+package view;
+
+import controller.ConsultaController;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.*;
+
+public class TelaConsulta extends JFrame {
+    private static final long serialVersionUID = 1L;
+
+    private JComboBox<String> cbTabelas;
+    private JComboBox<String> cbFiltros;
+    private JTextField txtFiltroValor;
+    private JTable tabela;
+    private DefaultTableModel tableModel;
+    private ConsultaController controller;
+
+    private final Map<String, String[]> filtrosPorTabela = Map.of(
+        "Empresas", new String[]{"Todos", "Nome", "CNPJ"},
+        "Equipamento", new String[]{"Todos", "Nome_Equip", "Cod_Emp"},
+        "OS", new String[]{"Todos", "Data", "Cod_Equip"}
+    );
+
+    public TelaConsulta() {
+        controller = new ConsultaController();
+
+        setTitle("Consulta com Filtros");
+        setSize(750, 500);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel lblTabela = new JLabel("Tabela:");
+        lblTabela.setBounds(20, 20, 50, 25);
+        add(lblTabela);
+
+        cbTabelas = new JComboBox<>(filtrosPorTabela.keySet().toArray(new String[0]));
+        cbTabelas.setBounds(80, 20, 150, 25);
+        add(cbTabelas);
+
+        JLabel lblFiltro = new JLabel("Filtro:");
+        lblFiltro.setBounds(250, 20, 50, 25);
+        add(lblFiltro);
+
+        cbFiltros = new JComboBox<>();
+        cbFiltros.setBounds(300, 20, 150, 25);
+        add(cbFiltros);
+
+        txtFiltroValor = new JTextField();
+        txtFiltroValor.setBounds(460, 20, 150, 25);
+        add(txtFiltroValor);
+
+        JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(620, 20, 100, 25);
+        add(btnBuscar);
+
+        tableModel = new DefaultTableModel();
+        tabela = new JTable(tableModel);
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setBounds(20, 70, 700, 370);
+        add(scroll);
+
+        cbTabelas.addActionListener(e -> atualizarFiltros());
+
+        cbFiltros.addActionListener(e -> {
+            Object selectedItem = cbFiltros.getSelectedItem();
+            if (selectedItem != null) {
+                txtFiltroValor.setVisible(!selectedItem.toString().equals("Todos"));
+            } else {
+                txtFiltroValor.setVisible(false);
+            }
+        });
+
+        btnBuscar.addActionListener(e -> buscarDados());
+
+        atualizarFiltros();
+    }
+
+    private void atualizarFiltros() {
+        Object tabelaSelecionada = cbTabelas.getSelectedItem();
+        if (tabelaSelecionada == null) return;
+
+        cbFiltros.removeAllItems();
+        String[] filtros = filtrosPorTabela.getOrDefault(tabelaSelecionada.toString(), new String[0]);
+
+        for (String filtro : filtros) {
+            cbFiltros.addItem(filtro);
+        }
+
+        cbFiltros.setSelectedIndex(0);
+        txtFiltroValor.setVisible(false);
+    }
+
+    private void buscarDados() {
+        Object tabelaObj = cbTabelas.getSelectedItem();
+        Object filtroObj = cbFiltros.getSelectedItem();
+
+        if (tabelaObj == null || filtroObj == null) return;
+
+        String tabelaSelecionada = tabelaObj.toString();
+        String campoFiltro = filtroObj.toString();
+        String valorFiltro = txtFiltroValor.getText().trim();
+
+        List<Object[]> dados = controller.buscarDados(tabelaSelecionada, campoFiltro, valorFiltro);
+        String[] colunas = controller.getColunas(tabelaSelecionada);
+
+        atualizarTabela(colunas, dados);
+    }
+
+    private void atualizarTabela(String[] colunas, List<Object[]> dados) {
+        tableModel.setRowCount(0);
+        tableModel.setColumnIdentifiers(colunas);
+        for (Object[] linha : dados) {
+            tableModel.addRow(linha);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaConsulta().setVisible(true));
+    }
+}
