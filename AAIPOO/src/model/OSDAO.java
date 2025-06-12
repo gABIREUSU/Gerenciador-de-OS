@@ -149,32 +149,62 @@ public class OSDAO {
 	    return somaTotal;
 	}
 	
-	public void salvar(OS os) throws SQLException {
+	public void salvar(OS os, List<String> servicos) throws SQLException {
 	    Conexao.conectar();
 	    int novoCodigo = 1;
- 
+
 	    try (Connection conn = Conexao.Conexao;
 	         Statement stmtMax = conn.createStatement();
 	         ResultSet result = stmtMax.executeQuery("SELECT MAX(Cod_OS) AS ultimo_id FROM OS")) {
- 
+
 	        if (result.next()) {
 	            novoCodigo = result.getInt("ultimo_id") + 1;
 	        }
- 
- 
-	        String sql = "INSERT INTO OS (Cod_OS,Cod_Equip, Data, Preco) VALUES (?, ?, ?, ?)";
-	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            stmt.setInt(1, novoCodigo);
-	            stmt.setInt(2, os.getCod_Equip());
-	            stmt.setString(3, os.getData());
-	            stmt.setFloat(4,os.getPreco());
-	            stmt.executeUpdate();
-	            JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
+
+	        String sqlOS = "INSERT INTO OS (Cod_OS,Cod_Equip, Data, Preco) VALUES (?, ?, ?, ?)";
+	        try (PreparedStatement stmtOS = conn.prepareStatement(sqlOS)) {
+	            stmtOS.setInt(1, novoCodigo);
+	            stmtOS.setInt(2, os.getCod_Equip());
+	            stmtOS.setString(3, os.getData());
+	            stmtOS.setFloat(4, os.getPreco());
+	            stmtOS.executeUpdate();
 	        }
- 
+
+	        String sqlOSxItem = "INSERT INTO OSxItem (Cod_OS, Cod_Item) VALUES (?, ?)";
+	        try (PreparedStatement stmtOSxItem = conn.prepareStatement(sqlOSxItem)) {
+	            for (String servico : servicos) {
+	                stmtOSxItem.setInt(1, novoCodigo);
+	                stmtOSxItem.setInt(2, getCodItem(servico));
+	                stmtOSxItem.executeUpdate();
+	            }
+	        }
+
+	        JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
+
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	}
+
+	
+	public int getCodItem(String item){
+		Conexao.conectar();
+	    String sql = "SELECT Cod_Item FROM Item WHERE Descricao = ?";
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, item);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Item");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
 	}
 	
 	public String createInParameters(int x) {

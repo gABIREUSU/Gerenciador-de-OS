@@ -43,8 +43,8 @@ public class OSController {
 		return dao.setPreco(lista);
 	}
 	
-	public void salvar(int Cod_Equip,String Data,float preco) throws SQLException {
+	public void salvar(int Cod_Equip,String Data,float preco, List<String> servicos) throws SQLException {
 		OS os = new OS(Cod_Equip, Data,preco);
-		dao.salvar(os);
+		dao.salvar(os,servicos);
 	}
 }

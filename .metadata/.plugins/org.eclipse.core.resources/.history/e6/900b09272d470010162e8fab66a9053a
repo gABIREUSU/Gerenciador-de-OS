@@ -1,0 +1,33 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+public class teste extends JFrame{
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new teste());
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public teste() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		setBounds(100, 100, 450, 300);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+	}
+
+}

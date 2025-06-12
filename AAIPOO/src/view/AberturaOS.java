@@ -241,7 +241,6 @@ public class AberturaOS extends JFrame {
 		LocalDate hoje = LocalDate.now();
 		String dataFormatada = hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		int cod_equip = controller.getCodEquip((String)CB_Equip.getSelectedItem(), (String)CB_Empresa.getSelectedItem());
-		controller.salvar(cod_equip, dataFormatada, preco);
+		controller.salvar(cod_equip, dataFormatada, preco,getValoresSelecionados());
 	}
-
 }

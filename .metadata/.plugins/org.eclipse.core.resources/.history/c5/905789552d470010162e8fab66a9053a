@@ -1,0 +1,86 @@
+package view;
+
+import java.awt.EventQueue;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
+import controller.ConsultaGeralController;
+
+public class teste extends JFrame{
+	private JPanel contentPane;
+    private JTable table;
+    private JComboBox<String> comboTabelas;
+    private JButton btnBuscar;
+
+    private ConsultaGeralController controller = new ConsultaGeralController();
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new teste());
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public teste() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		setTitle("Consulta Geral do Banco de Dados");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 800, 500);
+        contentPane = new JPanel();
+        contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel lblTabela = new JLabel("Tabela:");
+        lblTabela.setBounds(20, 20, 50, 25);
+        contentPane.add(lblTabela);
+
+        comboTabelas = new JComboBox<>();
+        comboTabelas.setBounds(80, 20, 200, 25);
+        contentPane.add(comboTabelas);
+
+        btnBuscar = new JButton("Buscar");
+        btnBuscar.setBounds(300, 20, 100, 25);
+        contentPane.add(btnBuscar);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 60, 740, 380);
+        contentPane.add(scrollPane);
+
+        table = new JTable();
+        scrollPane.setViewportView(table);
+
+        // Preencher as tabelas válidas no comboBox
+        List<String> tabelas = controller.getTabelasValidas();
+        for (String tabela : tabelas) {
+            comboTabelas.addItem(tabela);
+        }
+
+        // Ação do botão buscar
+        //btnBuscar.addActionListener(e -> carregarDados());
+
+        // Carregar automaticamente a primeira
+        if (comboTabelas.getItemCount() > 0) {
+            comboTabelas.setSelectedIndex(0);
+            //carregarDados();
+        }
+	}
+	
+
+}
