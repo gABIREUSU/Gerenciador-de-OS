@@ -30,9 +30,8 @@ public class OS {
 	public void setPreco(float preco) {
 		this.preco = preco;
 	}
-	public OS(int cod_OS, int cod_Equip, String data, float preco) {
+	public OS(int cod_Equip, String data, float preco) {
 		super();
-		setCod_OS(cod_OS);
 		setCod_Equip(cod_Equip);
 		setData(data);
 		setPreco(preco);

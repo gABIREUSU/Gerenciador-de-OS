@@ -8,7 +8,7 @@ public class Conexao {
 	private static String Url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=DA123_Exerc_G07;user=DA123_Exerc_G07;password=;encrypt=false;trustServerCertificate=true;";
 	public static Connection Conexao;
 
-	public static void conectar() { // Efetua a conexão
+	public static void conectar() { // Efetua a conexãos
 		try {
 			// Conexãocom o banco
 			Conexao = DriverManager.getConnection(Url);

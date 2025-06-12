@@ -1,0 +1,95 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class OSDAO {
+	public List<String> carregarEmpresas() throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome FROM Empresas";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();){
+		while(rs.next()) {
+			lista.add(rs.getString("Nome"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public List<String> carregarEquipamentos(int cod) throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome_Equip FROM Equipamento WHERE Cod_Emp = ?";
+		List<String> lista = new ArrayList<>();
+		
+		try (Connection conn = Conexao.Conexao;
+			PreparedStatement stmt = conn.prepareStatement(sql);){	
+			stmt.setInt(1, cod);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				lista.add(rs.getString("Nome_Equip"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+	
+	public List<String> carregarItens(char x){
+		Conexao.conectar();
+		String sql = "SELECT Descricao FROM Item WHERE Tipo = ?";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		){
+		stmt.setString(1, String.valueOf(x));
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			lista.add(rs.getString("Descricao"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public int getCodEmp(String empresa) {
+	    Conexao.conectar();
+	    String sql = "SELECT eq.Cod_Emp FROM Equipamento eq INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp WHERE ep.Nome = ? GROUP BY eq.Cod_Emp";
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, empresa);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Emp");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
+	
+	public float setPreco(int x) {
+		Conexao.conectar();
+		
+
+	    return (float) 0.0;
+	}
+
+	
+	
+}

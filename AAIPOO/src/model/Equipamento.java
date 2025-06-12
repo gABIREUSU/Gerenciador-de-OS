@@ -39,8 +39,8 @@ public class Equipamento {
 	    setNome(nome);
 	}
 
+}
+
 
 	
 	 
-
-}

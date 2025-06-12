@@ -1,0 +1,185 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+
+public class OSDAO {
+	public List<String> carregarEmpresas() throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome FROM Empresas";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();){
+		while(rs.next()) {
+			lista.add(rs.getString("Nome"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public List<String> carregarEquipamentos(int cod) throws SQLException{
+		Conexao.conectar();
+		String sql = "SELECT Nome_Equip FROM Equipamento WHERE Cod_Emp = ?";
+		List<String> lista = new ArrayList<>();
+		
+		try (Connection conn = Conexao.Conexao;
+			PreparedStatement stmt = conn.prepareStatement(sql);){	
+			stmt.setInt(1, cod);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				lista.add(rs.getString("Nome_Equip"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+	
+	public List<String> carregarItens(char x){
+		Conexao.conectar();
+		String sql = "SELECT Descricao FROM Item WHERE Tipo = ?";
+		List<String> lista = new ArrayList<>();
+		
+		try(Connection conn = Conexao.Conexao;
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		){
+		stmt.setString(1, String.valueOf(x));
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			lista.add(rs.getString("Descricao"));
+		}
+		}catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return lista;
+	}
+	
+	public int getCodEmp(String empresa) {
+	    Conexao.conectar();
+	    String sql = "SELECT eq.Cod_Emp FROM Equipamento eq INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp WHERE ep.Nome = ? GROUP BY eq.Cod_Emp";
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, empresa);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Emp");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
+	
+	public int getCodEquip(String equipamento,String empresa) {
+	    Conexao.conectar();
+	    String sql = "SELECT eq.Cod_Equip FROM Equipamento eq INNER JOIN Empresas ep ON eq.Cod_Emp = ep.Cod_Emp WHERE ep.Cod_Emp = ? AND Nome_Equip = ?";
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    	
+	    	stmt.setInt(1, getCodEmp(empresa));
+	        stmt.setString(2, equipamento);
+	        ResultSet rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            return rs.getInt("Cod_Equip");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1;
+	}
+	
+	public float setPreco(List<String> lista) {
+	    if (lista == null || lista.isEmpty()) return 0f;
+
+	    Map<String, Integer> contagem = new HashMap<>();
+	    for (String desc : lista) {
+	        contagem.put(desc, contagem.getOrDefault(desc, 0) + 1);
+	    }
+
+	    Conexao.conectar();
+
+	    // Monta a query para buscar preço só uma vez por item
+	    String sql = "SELECT Descricao, Preco FROM Item WHERE Descricao IN (" + createInParameters(contagem.size()) + ");";
+
+	    float somaTotal = 0f;
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        int index = 1;
+	        for (String key : contagem.keySet()) {
+	            stmt.setString(index++, key);
+	        }
+
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            String descricao = rs.getString("Descricao");
+	            float preco = rs.getFloat("Preco");
+	            int quantidade = contagem.getOrDefault(descricao, 0);
+	            somaTotal += preco * quantidade;
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return -1f;
+	    }
+
+	    return somaTotal;
+	}
+	
+	public void salvar(OS os) throws SQLException {
+	    Conexao.conectar();
+	    int novoCodigo = 1;
+ 
+	    try (Connection conn = Conexao.Conexao;
+	         Statement stmtMax = conn.createStatement();
+	         ResultSet result = stmtMax.executeQuery("SELECT MAX(Cod_OS) AS ultimo_id FROM OS")) {
+ 
+	        if (result.next()) {
+	            novoCodigo = result.getInt("ultimo_id") + 1;
+	        }
+ 
+ 
+	        String sql = "INSERT INTO OS (Cod_OS,Cod_Equip, Data, Preco) VALUES (?, ?, ?, ?)";
+	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	            stmt.setInt(1, novoCodigo);
+	            stmt.setInt(2, os.getCod_Equip());
+	            stmt.setString(3, os.getData());
+	            stmt.setFloat(4,os.getPreco());
+	            stmt.executeUpdate();
+	            JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");
+	        }
+ 
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	
+	public String createInParameters(int x) {
+		return "?,".repeat(x-1)+"?";
+	}
+	
+}

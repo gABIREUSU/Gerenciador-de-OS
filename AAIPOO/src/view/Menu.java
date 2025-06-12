@@ -13,6 +13,7 @@ import design.GradientePanel;
 import design.MostrarComp;
 import design.RoundButton;
 import design.RoundedPanel;
+import design.TextButton;
 
 public class Menu extends JFrame {
 
@@ -35,9 +36,9 @@ public class Menu extends JFrame {
 
     private void initialize() {
         setTitle("Menu");
-        setBounds(100, 100, 600, 410);
+        setBounds(100, 100, 595, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centraliza na tela
+        setLocationRelativeTo(null); 
 
         GradientePanel contentPanel = new GradientePanel();
         contentPanel.setLayout(null);
@@ -50,16 +51,19 @@ public class Menu extends JFrame {
         panel.setCornerRadius(30);
         contentPanel.add(panel);
 
+        // Imagem da esquerda (logo)
         MostrarImagem painelImagem = new MostrarImagem();
         painelImagem.setBounds(32, -18, 144, 144);
         painelImagem.setBackground(new Color(166, 180, 255));
         contentPanel.add(painelImagem);
 
+        // Imagem da direita (notebook)
         MostrarComp painelImagem1 = new MostrarComp();
         painelImagem1.setBounds(245, 0, 276, 263);
         painelImagem1.setBackground(new Color(166, 180, 255));
         panel.add(painelImagem1);
 
+        // Textos
         JLabel lblSeuComputadorEm = new JLabel("SEU COMPUTADOR");
         lblSeuComputadorEm.setBounds(36, 42, 185, 46);
         lblSeuComputadorEm.setForeground(Color.BLACK);
@@ -84,20 +88,47 @@ public class Menu extends JFrame {
         lblGarantiaDeQualidade.setFont(new Font("Sitka Small", Font.PLAIN, 12));
         panel.add(lblGarantiaDeQualidade);
 
+        // Botão preto arredondado
         RoundButton btnCadastrar = new RoundButton("Cadastrar");
-        btnCadastrar.setBounds(86, 166, 120, 30);
+        btnCadastrar.setBounds(66, 169, 120, 30);
         btnCadastrar.setForeground(Color.WHITE);
         btnCadastrar.setBackground(Color.BLACK);
-
         btnCadastrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                CadastroEmpresa cadastro = new CadastroEmpresa(); // sua outra tela
+                CadastroEmpresa cadastro = new CadastroEmpresa(); 
                 cadastro.setVisible(true);
-                System.out.println("Botão 'Cadastrar' clicado.");
                 setVisible(false);
             }
         });
-
         panel.add(btnCadastrar);
+
+        // Botão estilo texto com hover roxo
+        TextButton btnCadastroEquipamento = new TextButton("Cadastro equipamento");
+        btnCadastroEquipamento.setFont(new Font("Sitka Small", Font.PLAIN, 12));
+        btnCadastroEquipamento.setBounds(327, 23, 175, 20);
+        contentPanel.add(btnCadastroEquipamento);
+        btnCadastroEquipamento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CadastroEquipamento telaCadastro = new CadastroEquipamento();
+                telaCadastro.setVisible(true);
+                setVisible(false);
+            }
+        });
+        
+        TextButton btnCadastroOs = new TextButton("Cadastro OS");
+        btnCadastroOs.setFont(new Font("Sitka Small", Font.PLAIN, 12));
+        btnCadastroOs.setBounds(196, 23, 131, 20);
+        contentPanel.add(btnCadastroOs);
+        btnCadastroOs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AberturaOS telaOS = new AberturaOS();
+                telaOS.setVisible(true);
+                setVisible(false);
+            }
+        });
     }
 }
+
+

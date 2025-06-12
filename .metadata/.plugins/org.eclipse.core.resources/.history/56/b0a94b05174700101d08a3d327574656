@@ -1,0 +1,40 @@
+package controller;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import model.OSDAO;
+
+public class OSController {
+	OSDAO dao = new OSDAO();
+	
+	public List<String> carregarEmpresas() {
+		try {
+			return dao.carregarEmpresas();
+		}catch (SQLException e) {
+			throw new RuntimeException("Erro ao buscar empresas: " + e.getMessage());
+		}
+		
+	}
+	
+	public List<String> carregarEquipamentos(int cod){
+		try {
+			return dao.carregarEquipamentos(cod);
+		} catch (SQLException e) {
+			throw new RuntimeException("Erro ao buscar equipamentos: " + e.getMessage());
+		}
+	}
+	
+	public List<String> carregarItens(char x) throws SQLException{
+		return dao.carregarItens(x);
+	}
+
+	
+	public int getCodEmp(String Empresa) {
+		return dao.getCodEmp(Empresa);
+	}
+	
+	public float setPreco() {
+		return dao.setPreco();
+	}
+}

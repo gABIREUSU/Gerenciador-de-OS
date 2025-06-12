@@ -12,4 +12,9 @@
     <fullyQualifiedTypeName name="View.TabelaEmpresa"/>
     <fullyQualifiedTypeName name="java.sql.SQLException"/>
     <fullyQualifiedTypeName name="model.Conexao"/>
+    <fullyQualifiedTypeName name="java.lang.String"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="java.util.Arrays"/>
+    <fullyQualifiedTypeName name="model.OS"/>
+    <fullyQualifiedTypeName name="java.awt.Color"/>
 </qualifiedTypeNameHistroy>

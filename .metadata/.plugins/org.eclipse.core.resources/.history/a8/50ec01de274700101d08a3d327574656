@@ -1,0 +1,48 @@
+import java.sql.*;
+import java.util.*;
+
+public class ConsultaGeralDAO {
+    private final List<String> tabelasPermitidas = Arrays.asList("equipamento", "empresas", "os");
+
+    public List<String> getTabelasPermitidas() {
+        return tabelasPermitidas;
+    }
+
+    public Vector<String> getColunasTabela(String tabela) {
+        Vector<String> colunas = new Vector<>();
+        try (Connection conn = Conexao.conectar();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM " + tabela + " LIMIT 1")) {
+
+            ResultSetMetaData meta = rs.getMetaData();
+            for (int i = 1; i <= meta.getColumnCount(); i++) {
+                colunas.add(meta.getColumnName(i));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return colunas;
+    }
+
+    public Vector<Vector<Object>> getDadosTabela(String tabela) {
+        Vector<Vector<Object>> dados = new Vector<>();
+        try (Connection conn = Conexao.conectar();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM " + tabela)) {
+
+            ResultSetMetaData meta = rs.getMetaData();
+            int colunas = meta.getColumnCount();
+
+            while (rs.next()) {
+                Vector<Object> linha = new Vector<>();
+                for (int i = 1; i <= colunas; i++) {
+                    linha.add(rs.getObject(i));
+                }
+                dados.add(linha);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dados;
+    }
+}

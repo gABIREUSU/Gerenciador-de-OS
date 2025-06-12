@@ -3,6 +3,7 @@ package controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import model.OS;
 import model.OSDAO;
 
 public class OSController {
@@ -25,7 +26,25 @@ public class OSController {
 		}
 	}
 	
+	public List<String> carregarItens(char x) throws SQLException{
+		return dao.carregarItens(x);
+	}
+
+	
 	public int getCodEmp(String Empresa) {
 		return dao.getCodEmp(Empresa);
+	}
+	
+	public int getCodEquip(String equipamento,String empresa) {
+		return dao.getCodEquip(equipamento, empresa);
+	}
+	
+	public float setPreco(List<String> lista) {
+		return dao.setPreco(lista);
+	}
+	
+	public void salvar(int Cod_Equip,String Data,float preco) throws SQLException {
+		OS os = new OS(Cod_Equip, Data,preco);
+		dao.salvar(os);
 	}
 }

@@ -85,6 +85,21 @@ public class EquipamentoDAO {
 	    }
 		return lista;
 	}
+	public List<String> carregarEquipamentos() throws SQLException {
+	    Conexao.conectar();
+	    String sql = "SELECT Nome FROM Equipamentos"; 
+	    List<String> lista = new ArrayList<>();
+
+	    try (Connection conn = Conexao.Conexao;
+	         PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+	        while (rs.next()) {
+	            lista.add(rs.getString("Nome"));
+	        }
+	    }
+	    return lista;
+	}
+
 	
 	public int getCodEmp(String empresa) {
 	    Conexao.conectar();

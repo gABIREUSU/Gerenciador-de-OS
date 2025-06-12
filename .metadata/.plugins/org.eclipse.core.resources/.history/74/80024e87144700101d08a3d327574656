@@ -1,0 +1,181 @@
+package view;
+
+import javax.swing.*;
+import controller.OSController;
+import design.DJTextField;
+
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+import java.util.List;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class AberturaOS extends JFrame {
+	private static final long serialVersionUID = 1L;
+	private OSController controller = new OSController();
+	private List<JPanel> listaItens = new ArrayList<>();
+	private JComboBox<String> CB_Empresa;
+	private JComboBox<String> CB_Equip;
+	private JPanel painelItens;
+	private JButton btnAdicionarItem;
+	private JTextField textField;
+	private float preco;
+
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> new AberturaOS());
+	}
+
+	public AberturaOS() {
+		initialize();
+	}
+
+	private void initialize() {
+		setBounds(100, 100, 600, 410);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
+		
+		//Inicio das combo box
+		CB_Empresa = new JComboBox<String>();
+		CB_Empresa.setBounds(91, 42, 456, 22);
+		CB_Empresa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CB_Equip.removeAllItems();
+				carregarEquipamento(getCodEmp((String) CB_Empresa.getSelectedItem()));
+			}
+		});
+		getContentPane().add(CB_Empresa);
+
+		CB_Equip = new JComboBox<String>();
+		CB_Equip.setBounds(114, 80, 433, 22);
+		getContentPane().add(CB_Equip);
+		
+		//Fim das combo box
+		//Inicio dos Jlable
+		JLabel lblAberturadeOs = new JLabel("Abertura de OS");
+		lblAberturadeOs.setBounds(258, 11, 100, 14);
+		getContentPane().add(lblAberturadeOs);
+
+		JLabel lblEmpresa = new JLabel("Empresa:");
+		lblEmpresa.setBounds(35, 46, 60, 14);
+		getContentPane().add(lblEmpresa);
+
+		JLabel lblEquipamento = new JLabel("Equipamento:");
+		lblEquipamento.setBounds(35, 84, 80, 14);
+		getContentPane().add(lblEquipamento);
+		
+		JLabel lblPreco = new JLabel("Preço Final:");
+		lblPreco.setBounds(381, 341, 60, 14);
+		getContentPane().add(lblPreco);
+		//Fim dos Jlable
+		
+		//Inicio dos Botões
+		JButton btnAdicionarServico = new JButton("Adicionar Serviço");
+		btnAdicionarServico.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					adicionarItemDinamico('S');
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAdicionarServico.setBounds(381, 167, 166, 32);
+		getContentPane().add(btnAdicionarServico);
+		
+		btnAdicionarItem = new JButton("Adicionar Peça");
+		btnAdicionarItem.setBounds(381, 124, 166, 32);
+		btnAdicionarItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					adicionarItemDinamico('I');
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		getContentPane().add(btnAdicionarItem);
+		//Fim dos Botões
+		
+		//Inicio do Painel dinamico
+		painelItens = new JPanel();
+		painelItens.setLayout(new BoxLayout(painelItens, BoxLayout.Y_AXIS));
+		JScrollPane scrollPane = new JScrollPane(painelItens);
+		scrollPane.setBounds(35, 124, 336, 234);
+		getContentPane().add(scrollPane);
+		//Fim do Painel dinamico
+
+		textField = new DJTextField("R$");
+		textField.setBounds(441, 338, 106, 20);
+		getContentPane().add(textField);
+		textField.setColumns(10);
+		
+
+		carregarEmpresas();
+		setVisible(true);
+	}
+
+	private void adicionarItemDinamico(char x) throws SQLException {
+    JPanel itemPanel = new JPanel();
+    itemPanel.setLayout(new BoxLayout(itemPanel, BoxLayout.X_AXIS));
+    itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40)); // altura fixa
+    
+    JComboBox<String> combo = new JComboBox<>();
+    combo.setPreferredSize(new Dimension(200, 30));
+    combo.setMaximumSize(new Dimension(200, 30));
+
+    List<String> lista = controller.carregarItens(x);
+
+    for (String c : lista) {
+        combo.addItem(c);
+    }
+
+    JButton btnRemover = new JButton("Remover");
+    btnRemover.addActionListener(e -> {
+        painelItens.remove(itemPanel);
+        listaItens.remove(itemPanel);
+        painelItens.revalidate();
+        painelItens.repaint();
+    });
+
+    itemPanel.add(Box.createRigidArea(new Dimension(10, 0))); // espaçamento à esquerda
+    itemPanel.add(combo);
+    itemPanel.add(Box.createRigidArea(new Dimension(10, 0))); // espaço entre combo e botão
+    itemPanel.add(btnRemover);
+    itemPanel.add(Box.createHorizontalGlue()); // empurra botão pro final (opcional)
+
+    painelItens.add(itemPanel);
+    listaItens.add(itemPanel);
+    painelItens.revalidate();
+    painelItens.repaint();
+}
+	public void carregarEmpresas() {
+		try {
+			List<String> empresas = controller.carregarEmpresas();
+			for (String c : empresas) {
+				CB_Empresa.addItem(c);
+			}
+		} catch (RuntimeException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao carregar empresas: " + e.getMessage());
+		}
+	}
+
+	public void carregarEquipamento(int codEmp) {
+		try {
+			List<String> equipamentos = controller.carregarEquipamentos(codEmp);
+			for (String c : equipamentos) {
+				CB_Equip.addItem(c);
+			}
+		} catch (RuntimeException e) {
+			JOptionPane.showMessageDialog(this, "Erro ao carregar equipamentos: " + e.getMessage());
+		}
+	}
+	
+	public int getCodEmp(String empresa) {
+		return controller.getCodEmp(empresa);
+	}
+}

@@ -1,0 +1,152 @@
+package view;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import Controller.EquipamentoController;
+import Model.Conexao;
+
+import java.sql.*;
+import java.awt.Component;
+import java.awt.event.*;
+
+public class TabelaEquipamento extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private JTable tabela;
+    private DefaultTableModel modelo;
+    private int linha;
+    private EquipamentoController controller = new EquipamentoController();
+
+    public TabelaEquipamento() {
+        setTitle("Equipamentos Cadastrados");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setLayout(null);
+
+        JButton btnAtualizar = new JButton("Atualizar");
+        btnAtualizar.setBounds(88, 327, 89, 23);
+        btnAtualizar.setVisible(false);
+        btnAtualizar.addActionListener(e -> atualizarEquipamento(tabela));
+        add(btnAtualizar);
+
+        JButton btnExcluir = new JButton("Excluir");
+        btnExcluir.setBounds(394, 327, 89, 23);
+        btnExcluir.setVisible(false);
+        btnExcluir.addActionListener(e -> {
+            try {
+                excluirDados(tabela);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+        add(btnExcluir);
+
+        JButton btnVoltar = new JButton("Voltar");
+        btnVoltar.setBounds(244, 327, 89, 23);
+        btnVoltar.addActionListener(e -> {
+            new CadastroEquipamento();
+            setVisible(false);
+        });
+        add(btnVoltar);
+
+        modelo = new DefaultTableModel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        tabela = new JTable(modelo);
+        tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                linha = tabela.getSelectedRow();
+                if (linha != -1) {
+                    btnAtualizar.setVisible(true);
+                    btnExcluir.setVisible(true);
+                }
+            }
+        });
+
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setBounds(88, 34, 395, 282);
+        add(scroll);
+
+        JLabel lblTitulo = new JLabel("Lista de Equipamentos Cadastrados");
+        lblTitulo.setBounds(185, 11, 250, 14);
+        add(lblTitulo);
+
+        carregarDados();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Component clicado = SwingUtilities.getDeepestComponentAt(getContentPane(), e.getX(), e.getY());
+                if (!(clicado instanceof JTable || SwingUtilities.isDescendingFrom(clicado, tabela))) {
+                    tabela.clearSelection();
+                    btnAtualizar.setVisible(false);
+                    btnExcluir.setVisible(false);
+                }
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void carregarDados() {
+        Conexao.conectar();
+
+        String sql = "SELECT Cod_Equip, Nome_Equip, Cod_Emp FROM Equipamento";
+
+        try (
+            Connection conn = Conexao.Conexao;
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+        ) {
+            modelo.setColumnIdentifiers(new Object[]{"Código", "Nome", "Cod_Emp"});
+
+            while (rs.next()) {
+                modelo.addRow(new Object[]{
+                    rs.getString("Cod_Equip"),
+                    rs.getString("Nome_Equip"),
+                    rs.getString("Cod_Emp")
+                });
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + e.getMessage());
+        }
+    }
+
+    private void atualizarEquipamento(JTable tabela) {
+        linha = tabela.getSelectedRow();
+        if (linha != -1) {
+            int cod_Equip = Integer.parseInt((String) tabela.getValueAt(linha, 0));
+            String nome = (String) tabela.getValueAt(linha, 1);
+            int cod_Emp = Integer.parseInt((String) tabela.getValueAt(linha, 2));
+
+            new AtualizarEquipamento(cod_Equip, nome, cod_Emp);
+            setVisible(false);
+        }
+    }
+
+    private void excluirDados(JTable tabela) throws SQLException {
+        linha = tabela.getSelectedRow();
+        if (linha != -1) {
+            int cod_Equip = Integer.parseInt((String) tabela.getValueAt(linha, 0));
+            String nome = (String) tabela.getValueAt(linha, 1);
+            int cod_Emp = Integer.parseInt((String) tabela.getValueAt(linha, 2));
+
+            controller.excluir(cod_Equip, nome, cod_Emp);
+            new TabelaEquipamento();
+            setVisible(false);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TabelaEquipamento());
+    }
+}

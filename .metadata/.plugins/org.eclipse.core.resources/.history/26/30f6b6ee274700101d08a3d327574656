@@ -1,0 +1,52 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
+import java.util.Vector;
+
+public class ConsultaGeral extends JFrame {
+    private JComboBox<String> comboTabelas;
+    private JTable tabela;
+    private JButton botaoBuscar;
+
+    public ConsultaGeral() {
+        setTitle("Consulta Geral");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        comboTabelas = new JComboBox<>();
+        botaoBuscar = new JButton("Buscar");
+        tabela = new JTable();
+
+        JPanel topo = new JPanel();
+        topo.add(new JLabel("Tabela:"));
+        topo.add(comboTabelas);
+        topo.add(botaoBuscar);
+
+        add(topo, BorderLayout.NORTH);
+        add(new JScrollPane(tabela), BorderLayout.CENTER);
+
+        ConsultaGeralController controller = new ConsultaGeralController();
+
+        // Preencher combobox com as tabelas válidas
+        List<String> tabelas = controller.getTabelasValidas();
+        for (String nomeTabela : tabelas) {
+            comboTabelas.addItem(nomeTabela);
+        }
+
+        botaoBuscar.addActionListener(e -> {
+            String tabelaSelecionada = (String) comboTabelas.getSelectedItem();
+            Vector<String> colunas = controller.getColunasTabela(tabelaSelecionada);
+            Vector<Vector<Object>> dados = controller.getDadosTabela(tabelaSelecionada);
+
+            DefaultTableModel modelo = new DefaultTableModel(dados, colunas);
+            tabela.setModel(modelo);
+        });
+
+        if (comboTabelas.getItemCount() > 0) {
+            comboTabelas.setSelectedIndex(0);
+            botaoBuscar.doClick();
+        }
+    }
+}
