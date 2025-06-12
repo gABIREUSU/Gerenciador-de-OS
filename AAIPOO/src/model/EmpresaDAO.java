@@ -58,18 +58,55 @@ public class EmpresaDAO {
 	}
 
 	public void excluir(Empresa empresa) throws SQLException {
-		String sql = "DELETE FROM Empresas WHERE Cod_Emp = ?";
+	    String excluirItensOS = "DELETE FROM OSxItem WHERE Cod_OS IN (SELECT Cod_OS FROM OS WHERE Cod_Equip IN (SELECT Cod_Equip FROM Equipamento WHERE Cod_Emp = ?))";
+	    String excluirOS = "DELETE FROM OS WHERE Cod_Equip IN (SELECT Cod_Equip FROM Equipamento WHERE Cod_Emp = ?)";
+	    String excluirEquipamentos = "DELETE FROM Equipamento WHERE Cod_Emp = ?";
+	    String excluirEmpresa = "DELETE FROM Empresas WHERE Cod_Emp = ?";
 
-		Conexao.conectar();
+	    Conexao.conectar();
 
-		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setInt(1, empresa.getCod());
-			stmt.executeUpdate();
-			JOptionPane.showMessageDialog(null, "Dados excluidos com sucesso");
+	    try (Connection conn = Conexao.Conexao) {
+	        conn.setAutoCommit(false); // Inicia transação
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	        try (
+	            PreparedStatement stmtItensOS = conn.prepareStatement(excluirItensOS);
+	            PreparedStatement stmtOS = conn.prepareStatement(excluirOS);
+	            PreparedStatement stmtEquip = conn.prepareStatement(excluirEquipamentos);
+	            PreparedStatement stmtEmp = conn.prepareStatement(excluirEmpresa)
+	        ) {
+	            int codEmp = empresa.getCod();
+
+	            // 1. Excluir itens de OS vinculados às OSs dos equipamentos da empresa
+	            stmtItensOS.setInt(1, codEmp);
+	            stmtItensOS.executeUpdate();
+
+	            // 2. Excluir as OSs vinculadas aos equipamentos da empresa
+	            stmtOS.setInt(1, codEmp);
+	            stmtOS.executeUpdate();
+
+	            // 3. Excluir equipamentos da empresa
+	            stmtEquip.setInt(1, codEmp);
+	            stmtEquip.executeUpdate();
+
+	            // 4. Excluir a empresa
+	            stmtEmp.setInt(1, codEmp);
+	            stmtEmp.executeUpdate();
+
+	            conn.commit();
+	            JOptionPane.showMessageDialog(null, "Empresa, OSs, equipamentos e itens vinculados foram excluídos com sucesso");
+
+	        } catch (SQLException e) {
+	            conn.rollback(); // Desfaz alterações em caso de erro
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Erro ao excluir empresa e dados vinculados");
+	        } finally {
+	            conn.setAutoCommit(true); // Restaura autocommit
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 
 }

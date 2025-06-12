@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 public class EquipamentoDAO {
 	public void salvar(Equipamento equipamento) throws SQLException {
 		Conexao.conectar();
@@ -54,50 +52,19 @@ public class EquipamentoDAO {
 	}
 
 	public void excluir(Equipamento equipamento) throws SQLException {
-	    String excluirItensOS = "DELETE FROM OSxItem WHERE Cod_OS IN (SELECT Cod_OS FROM OS WHERE Cod_Equip = ?)";
-	    String excluirOS = "DELETE FROM OS WHERE Cod_Equip = ?";
-	    String excluirEquipamento = "DELETE FROM Equipamento WHERE Cod_Equip = ?";
+		String sql = "DELETE FROM Equipamento WHERE Cod_Equip = ?";
 
-	    Conexao.conectar();
+		Conexao.conectar();
 
-	    try (Connection conn = Conexao.Conexao) {
-	        conn.setAutoCommit(false); // Inicia transação
+		try (Connection conn = Conexao.Conexao; PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-	        try (
-	            PreparedStatement stmtItensOS = conn.prepareStatement(excluirItensOS);
-	            PreparedStatement stmtOS = conn.prepareStatement(excluirOS);
-	            PreparedStatement stmtEquip = conn.prepareStatement(excluirEquipamento)
-	        ) {
-	            int codEquip = equipamento.getCod_Equip();
+			stmt.setInt(1, equipamento.getCod_Equip());
+			stmt.executeUpdate();
 
-	            // 1. Excluir itens de OS vinculados ao equipamento
-	            stmtItensOS.setInt(1, codEquip);
-	            stmtItensOS.executeUpdate();
-
-	            // 2. Excluir OSs vinculadas ao equipamento
-	            stmtOS.setInt(1, codEquip);
-	            stmtOS.executeUpdate();
-
-	            // 3. Excluir o equipamento
-	            stmtEquip.setInt(1, codEquip);
-	            stmtEquip.executeUpdate();
-
-	            conn.commit();
-	            JOptionPane.showMessageDialog(null, "Equipamento, OSs e itens vinculados excluídos com sucesso");
-
-	        } catch (SQLException e) {
-	            conn.rollback();
-	            e.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Erro ao excluir equipamento e dados vinculados");
-	        } finally {
-	            conn.setAutoCommit(true); // Restaura autocommit
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
 
 	public List<String> carregarEmpresas() throws SQLException {
 		Conexao.conectar();
