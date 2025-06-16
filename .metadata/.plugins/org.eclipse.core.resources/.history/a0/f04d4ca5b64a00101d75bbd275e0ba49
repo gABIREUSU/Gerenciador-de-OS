@@ -118,26 +118,19 @@ public class Menu extends JFrame {
 
 		TextButton btnCadastroOs = new TextButton("Cadastro OS");
 		btnCadastroOs.setFont(new Font("Sitka Small", Font.PLAIN, 12));
-		btnCadastroOs.setBounds(428, 23, 115, 20);
+		btnCadastroOs.setBounds(170, 23, 115, 20);
 		contentPanel.add(btnCadastroOs);
+		
+		TextButton txtbtnAberturaOS = new TextButton("TelaOS");
+		txtbtnAberturaOS.setText("TelaOS");
+		txtbtnAberturaOS.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtbtnAberturaOS.setBounds(428, 23, 100, 20);
+		contentPanel.add(txtbtnAberturaOS);
 		btnCadastroOs.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AberturaOS AberturaOS = new AberturaOS();
 				AberturaOS.setVisible(true);
-				setVisible(false);
-			}
-		});
-		
-		TextButton btnTelaConsulta = new TextButton("Consultar");
-		btnTelaConsulta.setFont(new Font("Sitka Small", Font.PLAIN, 12));
-		btnTelaConsulta.setBounds(170, 23, 115, 20);
-		contentPanel.add(btnTelaConsulta);
-		btnTelaConsulta.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				TelaConsulta TelaConsulta = new TelaConsulta();
-				TelaConsulta.setVisible(true);
 				setVisible(false);
 			}
 		});

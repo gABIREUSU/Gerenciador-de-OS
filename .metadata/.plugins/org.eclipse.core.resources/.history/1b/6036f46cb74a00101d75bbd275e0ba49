@@ -81,7 +81,7 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(CB_Equip);
 
 		RoundedPanel scrollContainer = new RoundedPanel();
-		scrollContainer.setBounds(50, 151, 390, 230);
+		scrollContainer.setBounds(50, 145, 390, 230);
 		scrollContainer.setBackgroundColor(Color.WHITE);
 		scrollContainer.setLayout(null);
 		contentPanel.add(scrollContainer);
@@ -134,12 +134,12 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(btnSalvar);
 
 		JLabel lblPreco = new JLabel("Preço Final:");
-		lblPreco.setBounds(473, 317, 100, 20);
+		lblPreco.setBounds(460, 332, 100, 20);
 		lblPreco.setForeground(Color.WHITE);
 		contentPanel.add(lblPreco);
 
 		textField = new DJTextField("  R$" + preco);
-		textField.setBounds(470, 342, 120, 25);
+		textField.setBounds(470, 350, 120, 25);
 		textField.setEditable(false);
 		contentPanel.add(textField);
 		

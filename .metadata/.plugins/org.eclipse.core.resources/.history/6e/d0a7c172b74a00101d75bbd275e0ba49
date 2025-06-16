@@ -82,12 +82,12 @@ public class TelaConsulta extends JFrame {
         contentPanel.add(txtFiltroValor);
 
         RoundButton btnBuscar = new RoundButton("Buscar");
-        btnBuscar.setBounds(260, 334, 100, 30);
+        btnBuscar.setBounds(270, 110, 100, 30);
         btnBuscar.setForeground(Color.WHITE);
         contentPanel.add(btnBuscar);
 
         RoundedPanel scrollContainer = new RoundedPanel();
-        scrollContainer.setBounds(50, 123, 530, 200);
+        scrollContainer.setBounds(50, 160, 530, 200);
         scrollContainer.setBackgroundColor(Color.WHITE);
         scrollContainer.setLayout(null);
         contentPanel.add(scrollContainer);

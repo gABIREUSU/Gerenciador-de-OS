@@ -81,7 +81,7 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(CB_Equip);
 
 		RoundedPanel scrollContainer = new RoundedPanel();
-		scrollContainer.setBounds(50, 151, 390, 230);
+		scrollContainer.setBounds(50, 145, 390, 230);
 		scrollContainer.setBackgroundColor(Color.WHITE);
 		scrollContainer.setLayout(null);
 		contentPanel.add(scrollContainer);
