@@ -4,18 +4,15 @@ import javax.swing.*;
 import controller.OSController;
 import design.DJTextField;
 import design.GradientePanel;
-import design.MostrarSeta;
 import design.RoundButton;
 import design.RoundedPanel;
-import design.RoundedComboBoxUI;
-
 import java.awt.*;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.border.EmptyBorder;
 
 public class AberturaOS extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -54,12 +51,7 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(lblEmpresa);
 
 		CB_Empresa = new JComboBox<>();
-		CB_Empresa.setBounds(130, 70, 460, 30);
-		CB_Empresa.setBackground(Color.WHITE);
-		CB_Empresa.setForeground(Color.BLACK);
-		CB_Empresa.setUI(new RoundedComboBoxUI());
-		CB_Empresa.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
-		CB_Empresa.setRenderer(getCustomRenderer());
+		CB_Empresa.setBounds(130, 70, 460, 25);
 		CB_Empresa.addActionListener(e -> {
 			CB_Equip.removeAllItems();
 			carregarEquipamento(getCodEmp((String) CB_Empresa.getSelectedItem()));
@@ -72,14 +64,10 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(lblEquip);
 
 		CB_Equip = new JComboBox<>();
-		CB_Equip.setBounds(130, 105, 460, 30);
-		CB_Equip.setBackground(Color.WHITE);
-		CB_Equip.setForeground(Color.BLACK);
-		CB_Equip.setUI(new RoundedComboBoxUI());
-		CB_Equip.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
-		CB_Equip.setRenderer(getCustomRenderer());
+		CB_Equip.setBounds(130, 105, 460, 25);
 		contentPanel.add(CB_Equip);
 
+		// Painel Dinâmico
 		RoundedPanel scrollContainer = new RoundedPanel();
 		scrollContainer.setBounds(50, 145, 390, 230);
 		scrollContainer.setBackgroundColor(Color.WHITE);
@@ -98,7 +86,7 @@ public class AberturaOS extends JFrame {
 		scrollContainer.add(scrollPane);
 
 		btnAdicionarItem = new RoundButton("Adicionar Peça");
-		btnAdicionarItem.setBounds(460, 157, 140, 30);
+		btnAdicionarItem.setBounds(460, 145, 140, 30);
 		btnAdicionarItem.setForeground(Color.WHITE);
 		btnAdicionarItem.addActionListener(e -> {
 			try {
@@ -110,7 +98,7 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(btnAdicionarItem);
 
 		RoundButton btnAdicionarServico = new RoundButton("Adicionar Serviço");
-		btnAdicionarServico.setBounds(460, 211, 140, 30);
+		btnAdicionarServico.setBounds(460, 185, 140, 30);
 		btnAdicionarServico.setForeground(Color.WHITE);
 		btnAdicionarServico.addActionListener(e -> {
 			try {
@@ -134,24 +122,14 @@ public class AberturaOS extends JFrame {
 		contentPanel.add(btnSalvar);
 
 		JLabel lblPreco = new JLabel("Preço Final:");
-		lblPreco.setBounds(460, 332, 100, 20);
+		lblPreco.setBounds(460, 330, 100, 20);
 		lblPreco.setForeground(Color.WHITE);
 		contentPanel.add(lblPreco);
 
 		textField = new DJTextField("  R$" + preco);
-		textField.setBounds(470, 350, 120, 25);
+		textField.setBounds(460, 355, 120, 25);
 		textField.setEditable(false);
 		contentPanel.add(textField);
-		
-		MostrarSeta setaVoltar = new MostrarSeta();
-		setaVoltar.setBounds(570, 23, 30, 27); 
-		setaVoltar.setBackground(new Color(166, 180, 255)); 
-		setaVoltar.addActionListener(e -> {
-			new Menu().setVisible(true); 
-			dispose(); 
-		});
-		contentPanel.add(setaVoltar);
-
 
 		carregarEmpresas();
 		setVisible(true);
@@ -166,11 +144,6 @@ public class AberturaOS extends JFrame {
 		JComboBox<String> combo = new JComboBox<>();
 		combo.setPreferredSize(new Dimension(200, 30));
 		combo.setMaximumSize(new Dimension(200, 30));
-		combo.setBackground(Color.WHITE);
-		combo.setForeground(Color.BLACK);
-		combo.setUI(new RoundedComboBoxUI());
-		combo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
-		combo.setRenderer(getCustomRenderer());
 		combo.addActionListener(e -> setPreco());
 
 		List<String> itens = controller.carregarItens(tipo);
@@ -253,28 +226,9 @@ public class AberturaOS extends JFrame {
 	public void salvar() throws SQLException {
 		LocalDate hoje = LocalDate.now();
 		String dataFormatada = hoje.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		int cod_equip = controller.getCodEquip((String) CB_Equip.getSelectedItem(), (String) CB_Empresa.getSelectedItem());
+		int cod_equip = controller.getCodEquip((String) CB_Equip.getSelectedItem(),
+				(String) CB_Empresa.getSelectedItem());
 		controller.salvar(cod_equip, dataFormatada, preco, getValoresSelecionados());
 		JOptionPane.showMessageDialog(this, "Ordem de serviço salva com sucesso!");
-	}
-
-	private ListCellRenderer<? super String> getCustomRenderer() {
-		return new DefaultListCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-				if ("Selecionar empresa".equals(value)) {
-					label.setForeground(Color.LIGHT_GRAY);
-				} else {
-					label.setForeground(Color.BLACK);
-				}
-				label.setBackground(Color.WHITE);
-				label.setOpaque(true);
-				label.setBorder(new EmptyBorder(2, 8, 2, 2));
-				return label;
-			}
-		};
 	}
 }

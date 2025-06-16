@@ -105,7 +105,7 @@ public class Menu extends JFrame {
 		// Botão estilo texto com hover roxo
 		TextButton btnCadastroEquipamento = new TextButton("Cadastro equipamento");
 		btnCadastroEquipamento.setFont(new Font("Sitka Small", Font.PLAIN, 12));
-		btnCadastroEquipamento.setBounds(327, 23, 175, 20);
+		btnCadastroEquipamento.setBounds(270, 23, 161, 20);
 		contentPanel.add(btnCadastroEquipamento);
 		btnCadastroEquipamento.addActionListener(new ActionListener() {
 			@Override
@@ -118,13 +118,19 @@ public class Menu extends JFrame {
 
 		TextButton btnCadastroOs = new TextButton("Cadastro OS");
 		btnCadastroOs.setFont(new Font("Sitka Small", Font.PLAIN, 12));
-		btnCadastroOs.setBounds(196, 23, 131, 20);
+		btnCadastroOs.setBounds(170, 23, 115, 20);
 		contentPanel.add(btnCadastroOs);
+		
+		TextButton txtbtnTelaConsulta = new TextButton("TelaConsulta");
+		txtbtnTelaConsulta.setText("Consultas");
+		txtbtnTelaConsulta.setFont(new Font("Dialog", Font.PLAIN, 12));
+		txtbtnTelaConsulta.setBounds(428, 23, 100, 20);
+		contentPanel.add(txtbtnTelaConsulta);
 		btnCadastroOs.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AberturaOS telaOS = new AberturaOS();
-				telaOS.setVisible(true);
+				TelaConsulta telaConsulta = new TelaConsulta();
+				telaConsulta.setVisible(true);
 				setVisible(false);
 			}
 		});
